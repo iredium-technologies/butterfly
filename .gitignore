@@ -63,7 +63,6 @@ typings/
 
 # Custom
 .idea
-.vscode
 build
 dist
 package-lock.json
