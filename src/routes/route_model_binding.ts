@@ -1,4 +1,3 @@
-import * as models from '~/src/models'
 import { titleCase } from '~/src/helpers/title_case'
 import { NotFoundError } from '~/src/errors/not_found'
 import mongoose = require('mongoose')
@@ -31,6 +30,6 @@ export class RouteModelBinding {
 
   public getModel (param): mongoose.Model {
     const name = `${titleCase(param.replace(/_/g, ' ')).replace(/ /g, '')}`
-    return models[name]
+    return mongoose.models[name]
   }
 }
