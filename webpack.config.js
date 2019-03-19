@@ -2,7 +2,7 @@ const resolve = require('path').resolve // eslint-disable-line
 
 module.exports = {
   entry: {
-    main: resolve(__dirname, './example/index.ts')
+    example: resolve(__dirname, './example/index.ts')
   },
 
   resolve: {
