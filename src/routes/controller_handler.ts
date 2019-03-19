@@ -13,12 +13,12 @@ export const controllerHandler = (controller, method): Function => async (req, r
     const paramRecords = await routeModelBinding.getRouteRecords()
     const boundParams = [req].concat(paramRecords)
     controller.setUser(req.user)
-    const response = await controller[method](...boundParams)
-    if (response) {
-      if (response instanceof JsonResponse) {
-        res.status(response.statusCode).json(await response.render())
+    const controllerResponse = await controller[method](...boundParams)
+    if (controllerResponse) {
+      if (controllerResponse.constructor.name === JsonResponse.name) {
+        res.status(controllerResponse.statusCode).json(await controllerResponse.render())
       } else {
-        res.status(200).send(response)
+        res.status(200).send(controllerResponse)
       }
     } else {
       next()
