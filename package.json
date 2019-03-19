@@ -9,6 +9,9 @@
   "author": "Wahyu Nugraha <nugraha.c.wahyu@gmail.com>",
   "license": "MIT",
   "main": "build/butterfly.js",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "dev": "backpack dev --inspect=0.0.0.0:9229 --nolazy",
     "build": "BUILD_ENV=true backpack build",
