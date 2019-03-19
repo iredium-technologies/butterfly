@@ -8,10 +8,10 @@
   },
   "author": "Wahyu Nugraha <nugraha.c.wahyu@gmail.com>",
   "license": "MIT",
-  "main": "build/main.js",
+  "main": "build/butterfly.js",
   "scripts": {
     "dev": "backpack dev --inspect=0.0.0.0:9229 --nolazy",
-    "build": "backpack build",
+    "build": "BUILD_ENV=true backpack build",
     "start": "node build/example.js",
     "precommit": "npm run lint",
     "test": "NODE_ENV=test jest",
@@ -114,7 +114,8 @@
       "node"
     ],
     "moduleDirectories": [
-      "node_modules"
+      "node_modules",
+      "build"
     ],
     "moduleNameMapper": {
       "^~/src/(.*)": "<rootDir>/src/$1",
