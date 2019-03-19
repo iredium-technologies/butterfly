@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "lib": [
+        "es2018",
+        "es2018.promise"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["./*"],
+      "src/*": ["src/*"],
+      "~test/*": ["test/*"]
+    }
+  }
+}
