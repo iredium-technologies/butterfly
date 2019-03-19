@@ -6,7 +6,7 @@ const config = {
   },
 
   resolve: {
-    modules: [resolve(__dirname, 'lib'), 'node_modules', 'build'],
+    modules: [resolve(__dirname, 'lib'), 'node_modules', 'dist'],
     extensions: ['.ts', '.js', 'vue', '.json'],
     alias: {
       '~': __dirname,
@@ -19,17 +19,17 @@ const config = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules|build/,
+        exclude: /node_modules|dist/,
         loader: 'babel-loader'
       },
       {
         test: /\.vue$/,
-        exclude: /node_modules|build/,
+        exclude: /node_modules|dist/,
         loader: 'vue-loader'
       },
       {
         test: /\.ts$/,
-        exclude: /node_modules|build/,
+        exclude: /node_modules|dist/,
         loader: 'ts-loader'
       }
     ]

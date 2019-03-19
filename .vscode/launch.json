@@ -12,7 +12,7 @@
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/app",
       "outFiles": [
-        "${workspaceFolder}/build/main.js"
+        "${workspaceFolder}/dist/main.js"
       ],
       "internalConsoleOptions": "neverOpen"
     }
