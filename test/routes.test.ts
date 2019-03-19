@@ -1,4 +1,4 @@
-import Butterfly from '~/src/index'
+import Butterfly from '~/src/butterfly'
 import config from '~/example/config'
 import request = require('supertest')
 
