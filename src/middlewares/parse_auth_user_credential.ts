@@ -1,11 +1,10 @@
 import { UserService } from '~/src/services/user'
 import { BaseMiddleware } from '~/src/middlewares/base_middleware'
 
-const User = new UserService()
-
 export class ParseAuthUserMiddleware extends BaseMiddleware {
   public static default (): Function {
     return async (req, res, next): Promise<void> => {
+      const User = new UserService()
       const scopesString = req.get('X-Authenticated-Scope')
       const scopes = scopesString ? scopesString.split(' ') : []
       const userId = req.get('X-Authenticated-Userid')
