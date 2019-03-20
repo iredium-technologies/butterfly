@@ -2,6 +2,7 @@ import { BaseError } from '~/src/errors/base_error'
 import { NotFoundError } from './errors'
 import Routes from '~/src/routes/route_drawer'
 import { mongodb } from './databases/mongodb'
+import { ParseAuthUserMiddleware, RequestId } from '~/src/middlewares'
 import express = require('express')
 import logger = require('morgan')
 import bodyParser = require('body-parser')
@@ -35,6 +36,7 @@ export default class Butterfly {
     const { PORT = 8080 } = process.env
     this.setup()
     this.connectDatabases()
+    this.registerMiddlewares()
     this.drawRoutes()
     this.registerErrorMiddleware()
     this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
@@ -52,6 +54,12 @@ export default class Butterfly {
 
   protected connectDatabases (): void {
     if (this.databases.mongo.enable) mongodb(this.databases.mongo)
+  }
+
+  protected registerMiddlewares (): void {
+    const app = this.app
+    app.use(RequestId.default())
+    app.use(ParseAuthUserMiddleware.default())
   }
 
   protected registerErrorMiddleware (): void {
