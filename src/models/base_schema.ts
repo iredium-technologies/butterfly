@@ -3,7 +3,6 @@ import mongoose = require('mongoose')
 export class BaseSchema extends mongoose.Schema {
   public statics
   public methods
-  public pre
 
   public constructor (schema) {
     const baseOptions = {
