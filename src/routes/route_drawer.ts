@@ -107,7 +107,7 @@ export class RouteDrawer {
 
   public handleMethod (method, args): void {
     const path = args[0]
-    const middlewares = args.splice(1, args.length - 1).map((o): void => o.get ? o.get() : o)
+    const middlewares = args.filter((o): boolean => o).splice(1, args.length - 1).map((o): void => o.get ? o.get() : o)
     return this.router[method](path, ...middlewares)
   }
 }
