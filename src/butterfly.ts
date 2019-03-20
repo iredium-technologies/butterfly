@@ -13,13 +13,15 @@ export default class Butterfly {
   public app: express.Express
   protected routes: Function
   protected databases
+  protected userServiceClass
 
-  public constructor ({ routes = function (route): void {}, databases = null } = {}) {
+  public constructor ({ routes = function (route): void {}, databases = null, userServiceClass = null } = {}) {
     dotenv.config({
       path: path.resolve(process.cwd(), process.env.NODE_ENV === 'test' ? '.env.test' : '.env')
     })
     this.app = express()
     this.routes = routes
+    this.userServiceClass = userServiceClass
     this.databases = databases ? databases() : {
       mongo: {
         enable: false,
@@ -59,7 +61,7 @@ export default class Butterfly {
   protected registerMiddlewares (): void {
     const app = this.app
     app.use(RequestId.default())
-    app.use(ParseAuthUserMiddleware.default())
+    if (this.userServiceClass) app.use(ParseAuthUserMiddleware.default(this.userServiceClass))
   }
 
   protected registerErrorMiddleware (): void {
