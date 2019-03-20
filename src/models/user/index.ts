@@ -30,17 +30,17 @@ Schema.methods.comparePassword = function (candidatePassword): Promise<boolean> 
 }
 
 Schema.pre('save', function (next): void {
-  this.wasNew = true
+  this['wasNew'] = true
   next()
 })
 
 Schema.pre('save', function (next): void {
   const user = this
-  const password = user.password
+  const password = user['password']
   if (!user.isModified('password')) return next()
   hashPassword(password)
     .then((hash): void => {
-      user.password = hash
+      user['password'] = hash
       next()
     })
     .catch((err): void => {
