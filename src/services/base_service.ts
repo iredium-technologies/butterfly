@@ -1,9 +1,10 @@
-import { Document } from 'mongoose'
+import { BaseModelInterface } from '~/src/models/base_model_interface'
 import validateID from '~/src/helpers/validate_id'
 import { Pagination } from '~/src/services/pagination'
+import mongoose = require('mongoose')
 
 export class BaseService {
-  public Model
+  public Model: mongoose.Model<BaseModelInterface>
   public populates
   public sort
   public populateUser
@@ -39,7 +40,7 @@ export class BaseService {
    * @returns A Promise, an exception or a value.
    *
    */
-  public find ({ query = {}, where = {}, offset = '0', limit = '20', sort = '-created_at' } = {}): Promise<Document> {
+  public find ({ query = {}, where = {}, offset = '0', limit = '20', sort = '-created_at' } = {}): Promise<BaseModelInterface[]> {
     const result = this.Model.find(query)
     for (let key in where) {
       for (let operator in where[key]) {
@@ -55,7 +56,7 @@ export class BaseService {
     return result.exec()
   }
 
-  public get (index, field = '_id', options = {}): Promise<Document> {
+  public get (index, field = '_id', options = {}): Promise<BaseModelInterface> {
     if (!field) field = '_id'
     if (field === '_id' && typeof index === 'string' && !validateID(index)) return Promise.resolve(null)
     const query = {}
@@ -68,25 +69,25 @@ export class BaseService {
     return result.exec()
   }
 
-  public create (data): Promise<Document> {
+  public create (data): Promise<BaseModelInterface> {
     const record = new this.Model(data)
     return record.save()
   }
 
-  public async update (record, data): Promise<Document> {
+  public async update (record, data): Promise<BaseModelInterface> {
     record.massAssign(data)
     await record.save()
     return this.get(record._id) // to re-evaluate virtuals
   }
 
-  public async delete (record, user): Promise<Document> {
+  public async delete (record, user): Promise<BaseModelInterface> {
     if (!record.deleted_at) {
       return Promise.resolve(await record.softDelete(user))
     }
     return Promise.resolve(record)
   }
 
-  public async restore (record): Promise<Document> {
+  public async restore (record): Promise<BaseModelInterface> {
     if (record.deleted_at) {
       return Promise.resolve(await record.restore())
     }

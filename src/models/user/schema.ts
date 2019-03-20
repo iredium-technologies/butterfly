@@ -1,6 +1,6 @@
-import mongoose = require('mongoose')
+import { BaseSchema } from '~/src/models/base_schema'
 
-export var Schema = new mongoose.Schema({
+export var Schema = new BaseSchema({
   role: { type: String, default: 'standard', protect: true },
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
@@ -17,17 +17,4 @@ export var Schema = new mongoose.Schema({
     minlength: 8,
     protect: true
   }
-}, {
-  toObject: {
-    virtuals: true
-  },
-  toJSON: {
-    virtuals: true,
-    transform: function (doc, ret, options): object {
-      delete ret.password
-      delete ret.__v
-      return ret
-    }
-  },
-  timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 })

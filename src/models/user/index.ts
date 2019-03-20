@@ -4,10 +4,6 @@ import bcrypt from 'bcrypt'
 import { hashPassword } from '~/src/helpers/hash_password'
 import mongoose = require('mongoose')
 
-Schema.statics.getRouteKeyName = function (): string {
-  return '_id'
-}
-
 Schema.methods.fullName = function (): string {
   return (this.firstName.trim() + ' ' + this.lastName.trim())
 }
