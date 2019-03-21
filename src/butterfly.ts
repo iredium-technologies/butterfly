@@ -2,6 +2,7 @@ import { BaseError } from '~/src/errors/base_error'
 import { NotFoundError } from './errors'
 import Routes from '~/src/routes/route_drawer'
 import { mongodb } from './databases/mongodb'
+import { ParseAuthUserMiddleware, RequestId } from '~/src/middlewares'
 import express = require('express')
 import logger = require('morgan')
 import bodyParser = require('body-parser')
@@ -12,13 +13,15 @@ export default class Butterfly {
   public app: express.Express
   protected routes: Function
   protected databases
+  protected userServiceClass
 
-  public constructor ({ routes = function (route): void {}, databases = null } = {}) {
+  public constructor ({ routes = function (route): void {}, databases = null, userServiceClass = null } = {}) {
     dotenv.config({
       path: path.resolve(process.cwd(), process.env.NODE_ENV === 'test' ? '.env.test' : '.env')
     })
     this.app = express()
     this.routes = routes
+    this.userServiceClass = userServiceClass
     this.databases = databases ? databases() : {
       mongo: {
         enable: false,
@@ -35,6 +38,7 @@ export default class Butterfly {
     const { PORT = 8080 } = process.env
     this.setup()
     this.connectDatabases()
+    this.registerMiddlewares()
     this.drawRoutes()
     this.registerErrorMiddleware()
     this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
@@ -52,6 +56,12 @@ export default class Butterfly {
 
   protected connectDatabases (): void {
     if (this.databases.mongo.enable) mongodb(this.databases.mongo)
+  }
+
+  protected registerMiddlewares (): void {
+    const app = this.app
+    app.use(RequestId.default())
+    if (this.userServiceClass) app.use(ParseAuthUserMiddleware.default(this.userServiceClass))
   }
 
   protected registerErrorMiddleware (): void {

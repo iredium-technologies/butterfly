@@ -1,6 +1,6 @@
 import { controllerHandler as c } from '~/src/routes/controller_handler'
 
-export function handle (Controller, action): void {
+export function handle (Controller, action): Function {
   const controller = new Controller()
-  c(controller, action)
+  return c(controller, action)
 }
