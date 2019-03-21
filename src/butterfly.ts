@@ -14,6 +14,10 @@ export default class Butterfly {
   protected routes: Function
   protected databases
   protected userServiceClass
+  protected hooks = {
+    'butterfly:setup': [],
+    'butterfly:registerErrorMiddleware': []
+  }
 
   public constructor ({ routes = function (route): void {}, databases = null, userServiceClass = null } = {}) {
     dotenv.config({
@@ -44,6 +48,20 @@ export default class Butterfly {
     this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
   }
 
+  public hook (name: string, handler: Function): void {
+    if (this.hooks[name]) {
+      this.hooks[name].push(handler)
+    }
+  }
+
+  protected executeHookHandlers (name, ...args): void {
+    const handlers = this.hooks[name]
+    let handler: Function = null
+    for (handler of handlers) {
+      handler.call(this, args)
+    }
+  }
+
   protected setup (): void {
     const app = this.app
     app.disable('x-powered-by')
@@ -52,6 +70,7 @@ export default class Butterfly {
     }))
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
+    this.executeHookHandlers('butterfly:setup', app)
   }
 
   protected connectDatabases (): void {
@@ -93,6 +112,8 @@ export default class Butterfly {
       console.log(error)
       res.json(errorResponse)
     })
+
+    this.executeHookHandlers('butterfly:registerErrorMiddleware', app)
   }
 
   protected drawRoutes (): void {
