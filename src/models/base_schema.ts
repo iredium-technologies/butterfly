@@ -1,3 +1,4 @@
+import autopopulate = require('mongoose-autopopulate')
 import mongoose = require('mongoose')
 
 export class BaseSchema extends mongoose.Schema {
@@ -25,6 +26,7 @@ export class BaseSchema extends mongoose.Schema {
     this.registerCommonStatics()
     this.registerCommonMethods()
     this.registerCommonPres()
+    this.registerPlugins()
   }
 
   protected registerCommonStatics (): void {
@@ -41,5 +43,9 @@ export class BaseSchema extends mongoose.Schema {
 
   protected registerCommonPres (): void {
 
+  }
+
+  protected registerPlugins (): void {
+    this.plugin(autopopulate)
   }
 }

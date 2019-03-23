@@ -6762,10 +6762,10 @@ mongoosastic@^4.4.1:
     elasticsearch "13.3.0"
     lodash.clonedeep "4.5.0"
 
-mongoose-autopopulate@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/mongoose-autopopulate/-/mongoose-autopopulate-0.6.1.tgz#988101d683b764764829ce032ad9c739d319d8d0"
-  integrity sha512-ub/1Niglc6mVawW40KuK3K3K3Kty1c9FIxI8mXJRqxIUBiFXwGz6UL5VcIhjU0vxikSuVNcsX6fRJ/nxMMaxFw==
+mongoose-autopopulate@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/mongoose-autopopulate/-/mongoose-autopopulate-0.9.1.tgz#ee497b50a40e065fb54f4be81eef3004d33c17bb"
+  integrity sha512-Sh0eJXwENYtZbNBzkGyxxbcwwXeSd8Zi9QLHxLsVwwRoiYPC5qCas8+3mQcyKdWoZJOVV6rBVzS2Q1M/d+3j0g==
 
 mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
