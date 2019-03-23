@@ -5,6 +5,7 @@ export class BaseSchema extends mongoose.Schema {
   public statics
   public methods
   protected defaultRouteKeyName
+  protected populateUser
 
   public constructor (schema) {
     const baseOptions = {
@@ -22,6 +23,7 @@ export class BaseSchema extends mongoose.Schema {
       timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
     }
     super(schema, baseOptions)
+    this.populateUser = { select: 'id username first_name last_name default_address email' }
     this.defaultRouteKeyName = '_id'
     this.registerCommonStatics()
     this.registerCommonMethods()
