@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
+    "baseUrl": ".",
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./lib",
+    "strict": true,
     "lib": [
-        "es2018",
-        "es2018.promise"
+      "es2018",
+      "es2018.promise"
     ],
-    "baseUrl": "./",
     "paths": {
-      "~/*": ["./*"],
-      "src/*": ["src/*"],
-      "~test/*": ["test/*"]
+      "~/*": ["./*"]
     }
-  }
+  },
+  "include": ["src"],
+  "exclude": ["lib", "node_modules", "**/__tests__/*"]
 }
