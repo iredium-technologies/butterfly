@@ -11,6 +11,7 @@ import path = require('path')
 
 export default class Butterfly {
   public app: express.Express
+  public server
   protected routes: Function
   protected databases
   protected userServiceClass
@@ -45,13 +46,21 @@ export default class Butterfly {
     this.registerMiddlewares()
     this.drawRoutes()
     this.registerErrorMiddleware()
-    this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
+    this.server = this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
   }
 
   public hook (name: string, handler: Function): void {
     if (this.hooks[name]) {
       this.hooks[name].push(handler)
     }
+  }
+
+  public close (): Promise<void> {
+    return new Promise((resolve): void => {
+      this.server.close((): void => {
+        resolve()
+      })
+    })
   }
 
   protected executeHookHandlers (name, ...args): void {
