@@ -1,5 +1,8 @@
 # Butterfly
 
+[![NPM version](https://img.shields.io/npm/v/create-butterfly-app.svg?style=flat)](https://npmjs.com/package/create-butterfly-app)
+[![NPM downloads](https://img.shields.io/npm/dm/create-butterfly-app.svg?style=flat)](https://npmjs.com/package/create-butterfly-app)
+
 ## Description
 
 Express API Framework
