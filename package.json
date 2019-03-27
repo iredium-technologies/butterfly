@@ -99,7 +99,7 @@
     "supertest": "^3.0.0",
     "ts-loader": "^3.5.0",
     "tslint-config-airbnb": "^5.8.0",
-    "typescript": "^2.7.1",
+    "typescript": "^3.3.3",
     "typescript-eslint-parser": "^14.0.0"
   },
   "jest": {

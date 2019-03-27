@@ -1,4 +1,6 @@
-const resolve = require('path').resolve // eslint-disable-line
+/* eslint-disable */
+
+const resolve = require('path').resolve
 const webpackConfig = require('./webpack.config')
 
 module.exports = {

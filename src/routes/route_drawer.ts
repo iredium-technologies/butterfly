@@ -2,9 +2,14 @@ import { Router } from 'express'
 import { controllerHandler as handle } from '~/src/routes/controller_handler'
 import { isClass } from '~/src/helpers/is_class'
 import pluralize = require('pluralize')
+import { RequestHandlerParams } from 'express-serve-static-core';
 
 export class RouteDrawer {
-  protected router = null
+  protected router: Router
+
+  public constructor () {
+    this.router = Router()
+  }
 
   public draw (router, c): void {
     this.router = router
@@ -56,10 +61,10 @@ export class RouteDrawer {
     if (process.env.NODE_ENV === 'development') console.log({path: args[0], middlewares, Controller})
 
     for (let key in actions) {
-      const m = [].concat(middlewares)
+      const m = ([] as void[]).concat(middlewares)
       const action = actions[key]
       if (!controller[key]) throw Error(`Controller's action "${key}" not found`)
-      m.push(handle(controller, key))
+      m.push(handle(controller, key) as unknown as void)
       router[action.method](action.path, ...m)
     }
 
@@ -75,7 +80,7 @@ export class RouteDrawer {
     const c = args[args.length - 1]
     const middlewares = args.splice(1, args.length - 2).map((o): void => o.get ? o.get() : o)
 
-    this.router.use(basePath, ...middlewares)
+    this.router.use(basePath, ...middlewares as unknown as RequestHandlerParams[])
     const route = new RouteDrawer()
 
     if (c) route.draw(router, c)

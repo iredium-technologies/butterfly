@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noImplicitAny": false,
     "baseUrl": ".",
     "target": "es5",
     "module": "commonjs",
@@ -14,6 +15,9 @@
       "~/*": ["./*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["lib", "node_modules", "**/__tests__/*"]
+  "include": ["src", "test", "example"],
+  "exclude": ["lib", "node_modules", "**/__tests__/*"],
+  "paths": {
+    "~/*": ["./*"]
+  }
 }

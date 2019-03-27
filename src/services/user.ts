@@ -4,7 +4,7 @@ import { UserInterface } from '~/src/models/user/interface'
 import mongoose = require('mongoose')
 
 export class UserService extends BaseService {
-  public Model: mongoose.Model<UserInterface>
+  public Model: mongoose.Model<UserInterface> = mongoose.Model
 
   public constructor () {
     super(Model)

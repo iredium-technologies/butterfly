@@ -1,3 +1,4 @@
+import { ConfigInterface } from '~/src/config/index';
 import { BaseError } from '~/src/errors/base_error'
 import { NotFoundError } from './errors'
 import Routes from '~/src/routes/route_drawer'
@@ -20,14 +21,15 @@ export default class Butterfly {
     'butterfly:registerErrorMiddleware': []
   }
 
-  public constructor ({ routes = function (route): void {}, databases = null, userServiceClass = null } = {}) {
+  public constructor (config: ConfigInterface) {
+    const { routes, databases, userServiceClass } = config
     dotenv.config({
       path: path.resolve(process.cwd(), process.env.NODE_ENV === 'test' ? '.env.test' : '.env')
     })
     this.app = express()
     this.routes = routes
     this.userServiceClass = userServiceClass
-    this.databases = databases ? databases() : {
+    this.databases = databases() || {
       mongo: {
         enable: false,
         host: process.env.MONGO_HOST,
@@ -65,8 +67,7 @@ export default class Butterfly {
 
   protected executeHookHandlers (name, ...args): void {
     const handlers = this.hooks[name]
-    let handler: Function = null
-    for (handler of handlers) {
+    for (let handler of handlers) {
       handler.call(this, args)
     }
   }
@@ -108,7 +109,7 @@ export default class Butterfly {
         const code = error['code']
         if (code) {
           res.status(!isNaN(parseInt(code, 10)) && code <= 504 ? code : 400)
-          errorResponse = BaseError.toJSON(error)
+          errorResponse = BaseError.toJSON(new BaseError(error.name, error.message))
         } else if (error.name === 'ValidationError' || error.name === 'CastError' || code === 'LIMIT_UNEXPECTED_FILE') {
           res.status(400)
         } else {
