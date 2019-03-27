@@ -1,4 +1,4 @@
-import { ConfigInterface } from '~/src/config/index';
+import { ConfigInterface } from '~/src/types/config';
 import { BaseError } from '~/src/errors/base_error'
 import { NotFoundError } from './errors'
 import Routes from '~/src/routes/route_drawer'
