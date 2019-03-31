@@ -138,5 +138,8 @@
   "homepage": "https://github.com/iredium-technologies/iredium#readme",
   "directories": {
     "test": "test"
+  },
+  "_moduleAliases": {
+    "foo": "dist"
   }
 }
