@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./lib",
+    "strict": true,
+    "lib": [
+      "es2018",
+      "es2018.promise"
+    ],
+    "paths": {
+      "~/*": ["./*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["lib", "node_modules", "**/__tests__/*"],
+  "paths": {
+    "~/*": ["./*"]
+  }
+}

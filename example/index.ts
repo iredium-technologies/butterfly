@@ -4,6 +4,6 @@
 // const butterfly = new Butterfly(config)
 
 // butterfly.boot()
-import BaseModelInterface = require('../lib/models')
+// import BaseModelInterface = require('../lib/models')
 
-console.log({BaseModelInterface})
+// console.log({BaseModelInterface})

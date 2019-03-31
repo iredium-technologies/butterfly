@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "dev": "backpack dev --inspect=0.0.0.0:9229 --nolazy",
-    "build": "BUILD_ENV=true tsc && rm -r lib/test && rm -r lib/example",
+    "build": "node build",
+    "tsc": "tsc",
     "start": "node dist/example.js",
     "precommit": "npm run lint",
     "test": "NODE_ENV=test jest",
