@@ -8,7 +8,7 @@
   },
   "author": "Wahyu Nugraha <nugraha.c.wahyu@gmail.com>",
   "license": "MIT",
-  "main": "dist/butterfly.js",
+  "main": "lib/butterfly",
   "files": [
     "lib"
   ],
