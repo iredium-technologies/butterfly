@@ -1,6 +1,6 @@
 {
   "name": "@iredium/butterfly",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Express API Framework",
   "repository": {
     "type": "git",
@@ -19,7 +19,8 @@
     "start": "node dist/example.js",
     "precommit": "npm run lint",
     "test": "NODE_ENV=test jest",
-    "lint": "eslint --ext .ts,.js,.vue --ignore-path .gitignore ."
+    "lint": "eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
+    "release": "yarn build && yarn publish"
   },
   "keywords": [
     "butterfly",
