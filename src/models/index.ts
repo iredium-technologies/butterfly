@@ -1,2 +1,2 @@
-export * from '~/src/models/base_model_interface'
-export * from '~/src/models/base_schema'
+export * from './base_model_interface'
+export * from './base_schema'
