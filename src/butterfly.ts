@@ -18,6 +18,7 @@ export default class Butterfly {
   protected userServiceClass
   protected hooks = {
     'butterfly:setup': [],
+    'butterfly:registerMiddlewares': [],
     'butterfly:registerErrorMiddleware': []
   }
 
@@ -91,6 +92,7 @@ export default class Butterfly {
     const app = this.app
     app.use(RequestId.default())
     if (this.userServiceClass) app.use(ParseAuthUserMiddleware.default(this.userServiceClass))
+    this.executeHookHandlers('butterfly:registerMiddlewares', app)
   }
 
   protected registerErrorMiddleware (): void {
