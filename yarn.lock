@@ -3019,7 +3019,7 @@ combined-stream@^1.0.6, combined-stream@~1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^2.15.1, commander@~2.19.0:
+commander@^2.15.1, commander@^2.19.0, commander@~2.19.0:
   version "2.19.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.19.0.tgz#f6198aa84e5b83c46054b94ddedbfed5ee9ff12a"
   integrity sha512-6tvAOO+D6OENvRAh524Dh9jcfKTYDQAqvqezbCW82xj5X0pSrcpxtvRKHLG0yBY6SD7PSDrJaj+0AiOcKVd1Xg==
@@ -4834,7 +4834,7 @@ globals@^9.18.0:
   resolved "https://registry.yarnpkg.com/globals/-/globals-9.18.0.tgz#aa3896b3e69b487f17e31ed2143d69a8e30c2d8a"
   integrity sha512-S0nG3CLEQiY/ILxqtztTWH/3iRRdyBLw6KMDxnKMchrtbj2OFmehVh0WUCfW3DUrIgx/qFrJPICrq4Z4sTR9UQ==
 
-globby@^8.0.0, globby@^8.0.1:
+globby@^8.0.0, globby@^8.0.1, globby@^8.0.2:
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/globby/-/globby-8.0.2.tgz#5697619ccd95c5275dbb2d6faa42087c1a941d8d"
   integrity sha512-yTzMmKygLp8RUpG1Ymu2VXPSJQZjNAZPD4ywgYEaG7e4tBJeUQBO8OpXrf1RCNcEs5alsoJYPAMiIHP0cmeC7w==
@@ -9472,6 +9472,14 @@ ts-loader@^3.5.0:
     loader-utils "^1.0.2"
     micromatch "^3.1.4"
     semver "^5.0.1"
+
+tscpaths@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/tscpaths/-/tscpaths-0.0.7.tgz#9a80a466b6445a166cf1947446f134b62642617e"
+  integrity sha512-OgiF+fc/BV/X59/hbBZpZp1EXX0AxT2qqP6jzT3ZICrph56UXgqxZF+ztIHpsakRP6Jlun74rQqUSP598yu0JQ==
+  dependencies:
+    commander "^2.19.0"
+    globby "^8.0.2"
 
 tslib@1.9.0:
   version "1.9.0"

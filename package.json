@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "dev": "backpack dev --inspect=0.0.0.0:9229 --nolazy",
-    "build": "tsc --project tsconfig.build.json",
+    "build": "tsc --project tsconfig.build.json && tscpaths -s ./src -p tsconfig.build.json -o ./lib",
     "tsc": "tsc",
     "start": "node dist/example.js",
     "precommit": "npm run lint",
@@ -100,6 +100,7 @@
     "jest": "^21.2.1",
     "supertest": "^3.0.0",
     "ts-loader": "^3.5.0",
+    "tscpaths": "^0.0.7",
     "tslint-config-airbnb": "^5.8.0",
     "typescript": "^3.3.3",
     "typescript-eslint-parser": "^14.0.0"
