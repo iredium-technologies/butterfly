@@ -10,7 +10,8 @@
   "license": "MIT",
   "main": "dist/butterfly.js",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "scripts": {
     "dev": "backpack dev --inspect=0.0.0.0:9229 --nolazy",
