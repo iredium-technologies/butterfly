@@ -1,8 +1,13 @@
-import { BaseResponse } from './../routes/responses/base_response'
+import { Class } from '~/src/types/class';
+import { BaseResponse } from '~/src/routes/responses/base_response'
 import { BaseController } from '~/src/controllers/base_controller'
 import { JsonResponse } from '~/src/routes/responses/json'
 
 export class ApiController extends BaseController {
+  public constructor (ServiceClass: Class, PolicyClass: Class) {
+    super(ServiceClass, PolicyClass)
+  }
+
   /**
    * Get a collection of Models.
    * @returns A Promise, an exception or a value.

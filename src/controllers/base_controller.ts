@@ -1,3 +1,4 @@
+import { Class } from '~/src/types/class';
 import { User } from '~/src/models/user/index';
 import { BaseService } from '~/src/services/base_service'
 import { BasePolicy } from '~/src/policies/base_policy'
@@ -10,7 +11,7 @@ export class BaseController {
   protected policy: BasePolicy
   protected service: BaseService
 
-  public constructor (ServiceClass, PolicyClass) {
+  public constructor (ServiceClass: Class, PolicyClass: Class) {
     if (ServiceClass) this.service = new ServiceClass()
     this.PolicyClass = PolicyClass
     this.user = new User()
