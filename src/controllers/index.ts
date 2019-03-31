@@ -1,2 +1,2 @@
-export * from '~/src/controllers/base_controller'
-export * from '~/src/controllers/api_controller'
+export * from './base_controller'
+export * from './api_controller'

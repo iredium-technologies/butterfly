@@ -63,6 +63,7 @@ typings/
 
 # Custom
 .idea
+lib
 build
 dist
 package-lock.json

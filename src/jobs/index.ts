@@ -1,3 +1,3 @@
-export * from '~/src/jobs/job'
-export * from '~/src/jobs/job_interface'
-export * from '~/src/jobs/sample_job'
+export * from './job'
+export * from './job_interface'
+export * from './sample_job'

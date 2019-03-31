@@ -1,3 +1,4 @@
+import { ConfigInterface } from '~/src/types/config';
 import { BaseError } from '~/src/errors/base_error'
 import { NotFoundError } from './errors'
 import Routes from '~/src/routes/route_drawer'
@@ -11,6 +12,7 @@ import path = require('path')
 
 export default class Butterfly {
   public app: express.Express
+  public server
   protected routes: Function
   protected databases
   protected userServiceClass
@@ -19,14 +21,15 @@ export default class Butterfly {
     'butterfly:registerErrorMiddleware': []
   }
 
-  public constructor ({ routes = function (route): void {}, databases = null, userServiceClass = null } = {}) {
+  public constructor (config: ConfigInterface) {
+    const { routes, databases, userServiceClass } = config
     dotenv.config({
       path: path.resolve(process.cwd(), process.env.NODE_ENV === 'test' ? '.env.test' : '.env')
     })
     this.app = express()
     this.routes = routes
     this.userServiceClass = userServiceClass
-    this.databases = databases ? databases() : {
+    this.databases = databases() || {
       mongo: {
         enable: false,
         host: process.env.MONGO_HOST,
@@ -45,7 +48,7 @@ export default class Butterfly {
     this.registerMiddlewares()
     this.drawRoutes()
     this.registerErrorMiddleware()
-    this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
+    this.server = this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
   }
 
   public hook (name: string, handler: Function): void {
@@ -54,10 +57,17 @@ export default class Butterfly {
     }
   }
 
+  public close (): Promise<void> {
+    return new Promise((resolve): void => {
+      this.server.close((): void => {
+        resolve()
+      })
+    })
+  }
+
   protected executeHookHandlers (name, ...args): void {
     const handlers = this.hooks[name]
-    let handler: Function = null
-    for (handler of handlers) {
+    for (let handler of handlers) {
       handler.call(this, args)
     }
   }
@@ -99,7 +109,7 @@ export default class Butterfly {
         const code = error['code']
         if (code) {
           res.status(!isNaN(parseInt(code, 10)) && code <= 504 ? code : 400)
-          errorResponse = BaseError.toJSON(error)
+          errorResponse = BaseError.toJSON(new BaseError(error.name, error.message))
         } else if (error.name === 'ValidationError' || error.name === 'CastError' || code === 'LIMIT_UNEXPECTED_FILE') {
           res.status(400)
         } else {

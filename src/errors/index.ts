@@ -1,3 +1,3 @@
-export * from '~/src/errors/base_error'
-export * from '~/src/errors/not_found'
-export * from '~/src/errors/unauthorized'
+export * from './base_error'
+export * from './not_found'
+export * from './unauthorized'

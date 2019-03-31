@@ -1,3 +1,3 @@
-export * from '~/src/services/base_service'
-export * from '~/src/services/pagination'
-export * from '~/src/services/user'
+export * from './base_service'
+export * from './pagination'
+export * from './user'

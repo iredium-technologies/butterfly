@@ -1,6 +1,6 @@
 {
   "name": "@iredium/butterfly",
-  "version": "0.0.5",
+  "version": "0.0.17",
   "description": "Express API Framework",
   "repository": {
     "type": "git",
@@ -8,13 +8,14 @@
   },
   "author": "Wahyu Nugraha <nugraha.c.wahyu@gmail.com>",
   "license": "MIT",
-  "main": "dist/butterfly.js",
+  "main": "lib/butterfly",
   "files": [
-    "dist"
+    "lib"
   ],
   "scripts": {
     "dev": "backpack dev --inspect=0.0.0.0:9229 --nolazy",
-    "build": "BUILD_ENV=true backpack build",
+    "build": "tsc --project tsconfig.build.json && tscpaths -s ./src -p tsconfig.build.json -o ./lib",
+    "tsc": "tsc",
     "start": "node dist/example.js",
     "precommit": "npm run lint",
     "test": "NODE_ENV=test jest",
@@ -72,19 +73,22 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.0",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "@types/express": "^4.11.1",
     "@types/jest": "^24.0.11",
+    "@typescript-eslint/eslint-plugin": "^1.5.0",
+    "@typescript-eslint/parser": "^1.5.0",
     "awesome-typescript-loader": "^3.0.0-beta.18",
-    "babel-core": "^6.26.0",
+    "babel-core": "^7.0.0-beta.3",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^22.4.3",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-stage-0": "^6.16.0",
     "backpack-core": "^0.4.3",
-    "eslint": "^4.19.1",
+    "eslint": "^5.15.3",
     "eslint-config-standard": "^10.2.1",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-html": "^3.1.1",
@@ -96,8 +100,9 @@
     "jest": "^21.2.1",
     "supertest": "^3.0.0",
     "ts-loader": "^3.5.0",
+    "tscpaths": "^0.0.7",
     "tslint-config-airbnb": "^5.8.0",
-    "typescript": "^2.7.1",
+    "typescript": "^3.3.3",
     "typescript-eslint-parser": "^14.0.0"
   },
   "jest": {

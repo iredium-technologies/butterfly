@@ -2,6 +2,7 @@ import { BaseModelInterface } from '~/src/models/base_model_interface'
 import validateID from '~/src/helpers/validate_id'
 import { Pagination } from '~/src/services/pagination'
 import mongoose = require('mongoose')
+import { NotFoundError } from '../errors';
 
 export class BaseService {
   public Model: mongoose.Model<BaseModelInterface>
@@ -56,9 +57,9 @@ export class BaseService {
     return result.exec()
   }
 
-  public get (index, field = '_id', options = {}): Promise<BaseModelInterface> {
+  public async get (index, field = '_id', options = {}): Promise<BaseModelInterface> {
     if (!field) field = '_id'
-    if (field === '_id' && typeof index === 'string' && !validateID(index)) return Promise.resolve(null)
+    if (field === '_id' && typeof index === 'string' && !validateID(index)) return Promise.reject(new Error('invalid id'))
     const query = {}
     if (!options['withDeleted']) query['deleted_at'] = null
     query[field] = index
@@ -66,7 +67,11 @@ export class BaseService {
     for (let index in this.populates) {
       result.populate(this.populates[index])
     }
-    return result.exec()
+    const resultPromise = await result.exec()
+    if (resultPromise) {
+      return Promise.resolve(resultPromise)
+    }
+    return Promise.reject(new NotFoundError())
   }
 
   public create (data): Promise<BaseModelInterface> {
@@ -77,7 +82,7 @@ export class BaseService {
   public async update (record, data): Promise<BaseModelInterface> {
     record.massAssign(data)
     await record.save()
-    return this.get(record._id) // to re-evaluate virtuals
+    return this.get(record._id) as Promise<BaseModelInterface> // to re-evaluate virtuals
   }
 
   public async delete (record, user): Promise<BaseModelInterface> {
