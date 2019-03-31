@@ -4,7 +4,7 @@ import { UserInterface } from '~/example/models/task/interface'
 import mongoose = require('mongoose')
 
 export class TaskService extends BaseService {
-  public Model: mongoose.Model<UserInterface>
+  public Model: mongoose.Model<UserInterface> = Model
 
   public constructor () {
     super(Model)
