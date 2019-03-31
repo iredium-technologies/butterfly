@@ -69,7 +69,7 @@ export default class Butterfly {
   protected executeHookHandlers (name, ...args): void {
     const handlers = this.hooks[name]
     for (let handler of handlers) {
-      handler.call(this, args)
+      handler.call(this, ...args)
     }
   }
 
