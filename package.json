@@ -140,6 +140,6 @@
     "test": "test"
   },
   "_moduleAliases": {
-    "foo": "dist"
+    "~": "lib"
   }
 }
