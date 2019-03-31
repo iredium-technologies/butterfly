@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "dev": "backpack dev --inspect=0.0.0.0:9229 --nolazy",
-    "build": "node build",
+    "build": "tsc --project tsconfig.build.json",
     "tsc": "tsc",
     "start": "node dist/example.js",
     "precommit": "npm run lint",
@@ -138,8 +138,5 @@
   "homepage": "https://github.com/iredium-technologies/iredium#readme",
   "directories": {
     "test": "test"
-  },
-  "_moduleAliases": {
-    "~": "lib"
   }
 }
