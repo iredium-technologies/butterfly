@@ -19,6 +19,7 @@ export default class Butterfly {
   protected hooks = {
     'butterfly:setup': [],
     'butterfly:registerMiddlewares': [],
+    'butterfly:drawRoutes': [],
     'butterfly:registerErrorMiddleware': []
   }
 
@@ -130,5 +131,6 @@ export default class Butterfly {
 
   protected drawRoutes (): void {
     Routes.draw(this.app, this.routes)
+    this.executeHookHandlers('butterfly:drawRoutes', Routes)
   }
 }
