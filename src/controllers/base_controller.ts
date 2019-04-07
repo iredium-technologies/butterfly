@@ -14,11 +14,10 @@ export class BaseController {
 
   public constructor (ServiceClass: Class, PolicyClass: Class) {
     const User: UserType = mongoose.model('User')
-    if (ServiceClass) this.service = new ServiceClass()
+    this.service = new ServiceClass()
     this.PolicyClass = PolicyClass
     this.user = new User()
     this.policy = new BasePolicy(this.user, null)
-    this.service = new BaseService(User)
   }
 
   public authorize (method, record = null): void {

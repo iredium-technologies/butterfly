@@ -13,7 +13,7 @@
     "lib"
   ],
   "scripts": {
-    "dev": "backpack dev --inspect=0.0.0.0:9229 --nolazy",
+    "dev": "backpack dev --inspect=0.0.0.0:9230 --nolazy",
     "build": "tsc --project tsconfig.build.json && tscpaths -s ./src -p tsconfig.build.json -o ./lib",
     "tsc": "tsc",
     "start": "node dist/example.js",
