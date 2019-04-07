@@ -14,7 +14,7 @@ export class BaseController {
   public constructor (ServiceClass: Class, PolicyClass: Class) {
     this.service = new ServiceClass()
     this.PolicyClass = PolicyClass
-    const User = mongoose.model('User')
+    const User = mongoose.model('$User')
     this.user = new User() as UserInterface
     this.policy = new BasePolicy(this.user, null)
   }

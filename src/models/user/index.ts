@@ -48,6 +48,6 @@ Schema.pre('save', function (next): void {
     })
 })
 
-export const User: mongoose.Model<Interface> = mongoose.model<Interface>('User', Schema)
+export const User: mongoose.Model<Interface> = mongoose.model<Interface>('$User', Schema)
 
 export interface UserType extends mongoose.Model<Interface> {}
