@@ -13,6 +13,7 @@ module.exports = {
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/indent": ["error", 2],
     "@typescript-eslint/camelcase": "off",
-    "@typescript-eslint/no-unused-vars": "off"
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-empty-interface": "allow"
   }
 }
