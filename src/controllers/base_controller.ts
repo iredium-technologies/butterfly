@@ -4,7 +4,6 @@ import { BasePolicy } from '~/src/policies/base_policy'
 import { UnauthorizedError } from '~/src/errors/unauthorized'
 import { UserInterface } from '~/src/models/user/interface'
 import mongoose = require('mongoose')
-import { UserType } from '~/src/models/user'
 
 export class BaseController {
   protected PolicyClass
@@ -13,10 +12,10 @@ export class BaseController {
   protected service: BaseService
 
   public constructor (ServiceClass: Class, PolicyClass: Class) {
-    const User: UserType = mongoose.model('User')
     this.service = new ServiceClass()
     this.PolicyClass = PolicyClass
-    this.user = new User()
+    const User = mongoose.model('User')
+    this.user = new User() as UserInterface
     this.policy = new BasePolicy(this.user, null)
   }
 
