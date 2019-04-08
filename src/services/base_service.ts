@@ -4,6 +4,9 @@ import { Pagination } from '~/src/services/pagination'
 import mongoose = require('mongoose')
 import { NotFoundError } from '../errors';
 
+const DEFAULT_OFFSET = 0
+const DEFAULT_LIMIT = 20
+
 export class BaseService {
   public Model: mongoose.Model<BaseModelInterface>
   public populates
@@ -17,11 +20,11 @@ export class BaseService {
     this.populateUser = { path: 'user', select: 'id username first_name last_name default_address' }
   }
 
-  public paginate ({ options = {}, query = {}, offset = 0, limit = 20 } = {}): Promise<Pagination> {
+  public paginate ({ options = {}, query = {}, offset = DEFAULT_OFFSET, limit = DEFAULT_LIMIT } = {}): Promise<Pagination> {
     return Promise.resolve(new Pagination({
       Model: this.Model,
-      offset,
-      limit,
+      offset: this.parseInt(offset, DEFAULT_OFFSET),
+      limit: this.parseInt(limit, DEFAULT_LIMIT),
       sort: this.sort,
       populates: this.populates,
       query,
@@ -41,15 +44,15 @@ export class BaseService {
    * @returns A Promise, an exception or a value.
    *
    */
-  public find ({ query = {}, where = {}, offset = '0', limit = '20', sort = '-created_at' } = {}): Promise<BaseModelInterface[]> {
+  public find ({ query = {}, where = {}, offset = DEFAULT_OFFSET, limit = DEFAULT_LIMIT, sort = '-created_at' } = {}): Promise<BaseModelInterface[]> {
     const result = this.Model.find(query)
     for (let key in where) {
       for (let operator in where[key]) {
         result.where(key)[operator](where[key][operator])
       }
     }
-    result.skip(parseInt(offset, 10))
-    result.limit(parseInt(limit, 10))
+    result.skip(this.parseInt(offset, DEFAULT_OFFSET))
+    result.limit(this.parseInt(limit, DEFAULT_LIMIT))
     result.sort(sort)
     for (let index in this.populates) {
       result.populate(this.populates[index])
@@ -97,5 +100,11 @@ export class BaseService {
       return Promise.resolve(await record.restore())
     }
     return Promise.resolve(record)
+  }
+
+  protected parseInt(str: string | number, fallback: number): number {
+    const number = parseInt(str as unknown as string, 10)
+    if (isNaN(number)) return fallback
+    return number
   }
 }
