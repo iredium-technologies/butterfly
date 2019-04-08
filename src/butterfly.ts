@@ -145,6 +145,6 @@ export default class Butterfly {
 
   protected async drawRoutes (): Promise<void> {
     Routes.draw(this.app, this.routes)
-    await this.executeHookHandlers('butterfly:drawRoutes', [Routes, this.app])
+    await this.executeHookHandlers('butterfly:drawRoutes', Routes, this.app)
   }
 }
