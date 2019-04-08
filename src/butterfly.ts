@@ -43,13 +43,13 @@ export default class Butterfly {
     }
   }
 
-  public boot (): void {
+  public async boot (): Promise<void> {
     const { PORT = 8080 } = process.env
-    this.setup()
+    await this.setup()
     this.connectDatabases()
-    this.registerMiddlewares()
-    this.drawRoutes()
-    this.registerErrorMiddleware()
+    await this.registerMiddlewares()
+    await this.drawRoutes()
+    await this.registerErrorMiddleware()
     this.server = this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
   }
 
@@ -67,14 +67,14 @@ export default class Butterfly {
     })
   }
 
-  protected executeHookHandlers (name, ...args): void {
+  protected async executeHookHandlers (name, ...args): Promise<void> {
     const handlers = this.hooks[name]
     for (let handler of handlers) {
-      handler.call(this, ...args)
+      await handler(...args)
     }
   }
 
-  protected setup (): void {
+  protected async setup (): Promise<void> {
     const app = this.app
     app.disable('x-powered-by')
     app.use(logger('dev', {
@@ -82,21 +82,21 @@ export default class Butterfly {
     }))
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
-    this.executeHookHandlers('butterfly:setup', app)
+    await this.executeHookHandlers('butterfly:setup', app)
   }
 
   protected connectDatabases (): void {
     if (this.databases.mongo.enable) mongodb(this.databases.mongo)
   }
 
-  protected registerMiddlewares (): void {
+  protected async registerMiddlewares (): Promise<void> {
     const app = this.app
     app.use(RequestId.default())
     if (this.userServiceClass) app.use(ParseAuthUserMiddleware.default(this.userServiceClass))
-    this.executeHookHandlers('butterfly:registerMiddlewares', app)
+    await this.executeHookHandlers('butterfly:registerMiddlewares', app)
   }
 
-  protected registerErrorMiddleware (): void {
+  protected async registerErrorMiddleware (): Promise<void> {
     const app = this.app
     // Catch 404 and forward to error handler
     app.use((req, res, next): void => {
@@ -126,11 +126,11 @@ export default class Butterfly {
       res.json(errorResponse)
     })
 
-    this.executeHookHandlers('butterfly:registerErrorMiddleware', app)
+    await this.executeHookHandlers('butterfly:registerErrorMiddleware', app)
   }
 
-  protected drawRoutes (): void {
+  protected async drawRoutes (): Promise<void> {
     Routes.draw(this.app, this.routes)
-    this.executeHookHandlers('butterfly:drawRoutes', Routes)
+    await this.executeHookHandlers('butterfly:drawRoutes', Routes)
   }
 }
