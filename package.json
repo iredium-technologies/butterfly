@@ -61,7 +61,6 @@
     "multer-s3": "^2.7.0",
     "node-uuid": "^1.4.8",
     "pluralize": "^7.0.0",
-    "pug": "^2.0.0-beta11",
     "repl-promised": "^0.1.0",
     "request": "^2.82.0",
     "rimraf": "^2.6.2",

@@ -1,8 +1,11 @@
 import { BaseResponse } from '~/src/routes/responses/base_response'
 
 export class JsonResponse extends BaseResponse {
+  protected responseData = {}
+  protected responseMeta = {}
+
   public constructor (response, meta = {}) {
-    super(response)
+    super()
     this.responseData = response
     this.responseMeta = meta
   }
@@ -19,5 +22,15 @@ export class JsonResponse extends BaseResponse {
   public meta (meta): BaseResponse {
     this.responseMeta = meta
     return this
+  }
+
+  public async toJSONResponse (data, meta = {}): Promise<object> {
+    return {
+      data,
+      meta: {
+        http_status: this.statusCode,
+        ...meta
+      }
+    }
   }
 }

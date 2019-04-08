@@ -1,5 +1,5 @@
 import { RouteModelBinding } from '~/src/routes/route_model_binding'
-import { JsonResponse } from '~/src/routes/responses/json'
+import { JsonResponse, ViewResponse } from '~/src/routes'
 
 /**
  * Handles controller execution and responds to user (API Express version).
@@ -17,6 +17,8 @@ export const controllerHandler = (controller, method): Function => async (req, r
     if (controllerResponse) {
       if (controllerResponse.constructor.name === JsonResponse.name) {
         res.status(controllerResponse.statusCode).json(await controllerResponse.render())
+      } else if (controllerResponse.constructor.name === ViewResponse.name) {
+        res.status(controllerResponse.statusCode).render(...await controllerResponse.render())
       } else {
         res.status(200).send(controllerResponse)
       }

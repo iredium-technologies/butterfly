@@ -1,11 +1,9 @@
-export class BaseResponse {
-  public statusCode
-  protected response
-  protected responseData = {}
-  protected responseMeta = {}
+import { ResponseInterface } from './response_interface'
 
-  public constructor (response) {
-    this.response = response
+export abstract class BaseResponse implements ResponseInterface {
+  public statusCode
+
+  public constructor () {
     this.statusCode = 200
   }
 
@@ -14,17 +12,5 @@ export class BaseResponse {
     return this
   }
 
-  public render (): object {
-    return this.responseData
-  }
-
-  public async toJSONResponse (data, meta = {}): Promise<object> {
-    return {
-      data,
-      meta: {
-        http_status: this.statusCode,
-        ...meta
-      }
-    }
-  }
+  public abstract render();
 }

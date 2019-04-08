@@ -10,27 +10,36 @@ import bodyParser = require('body-parser')
 import dotenv = require('dotenv')
 import path = require('path')
 
+const DEFAULT_VIEW_ENGINE = 'pug'
+
 export default class Butterfly {
   public app: express.Express
   public server
   protected routes: Function
   protected databases
   protected userServiceClass
+  protected useViewEngine: boolean
+  protected viewEngine: string | undefined
+  protected viewsPaths: (string | undefined)[]
   protected hooks = {
     'butterfly:setup': [],
+    'butterfly:registerViewPaths': [],
     'butterfly:registerMiddlewares': [],
     'butterfly:drawRoutes': [],
     'butterfly:registerErrorMiddleware': []
   }
 
   public constructor (config: ConfigInterface) {
-    const { routes, databases, userServiceClass } = config
+    const { routes, databases, userServiceClass, useViewEngine = false, viewEngine = DEFAULT_VIEW_ENGINE, viewsPaths } = config
     dotenv.config({
       path: path.resolve(process.cwd(), process.env.NODE_ENV === 'test' ? '.env.test' : '.env')
     })
     this.app = express()
     this.routes = routes
     this.userServiceClass = userServiceClass
+    this.useViewEngine = useViewEngine
+    this.viewsPaths = viewsPaths || [path.join(process.cwd(), '/views')]
+    this.viewEngine = viewEngine
     this.databases = databases() || {
       mongo: {
         enable: false,
@@ -82,6 +91,11 @@ export default class Butterfly {
     }))
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
+    if (this.useViewEngine) {
+      await this.executeHookHandlers('butterfly:registerViewPaths', this.viewsPaths)
+      app.set('view engine', this.viewEngine)
+      app.set('views', this.viewsPaths)
+    }
     await this.executeHookHandlers('butterfly:setup', app)
   }
 
