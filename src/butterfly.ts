@@ -25,6 +25,7 @@ export default class Butterfly {
   protected viewsPaths: (string | undefined)[]
   protected hooks = {
     'butterfly:setup': [],
+    'butterfly:ready': [],
     'butterfly:registerViewPaths': [],
     'butterfly:registerMiddlewares': [],
     'butterfly:drawRoutes': [],
@@ -61,7 +62,9 @@ export default class Butterfly {
     await this.registerMiddlewares()
     await this.drawRoutes()
     await this.registerErrorMiddleware()
-    this.server = this.app.listen(PORT, (): void => console.log(`Iredium core listening on port ${PORT}`)) // eslint-disable-line no-console
+    this.server = this.app.listen(PORT, async (): Promise<void> => {
+      await this.executeHookHandlers('butterfly:ready', this.server)
+    })
   }
 
   public hook (name: string, handler: Function): void {
