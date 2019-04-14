@@ -63,7 +63,10 @@ export default class Butterfly {
     await this.drawRoutes()
     await this.registerErrorMiddleware()
     this.server = this.app.listen(PORT, async (): Promise<void> => {
-      await this.executeHookHandlers('butterfly:ready', this.server)
+      await this.executeHookHandlers('butterfly:ready', {
+        server: this.server,
+        port: PORT,
+      })
     })
   }
 
