@@ -1,9 +1,26 @@
 import express = require('express')
+import { Class } from '~/src/types/class';
+import { UserService } from '~/src/services'
 
-export class BaseMiddleware {
-  public static default (UserServiceClass: Function): express.RequestHandler {
+export abstract class BaseMiddleware {
+  public abstract generate (): express.RequestHandler
+  protected userServiceClass: Class
+
+  public constructor (userServiceClass: Class = UserService) {
+    this.userServiceClass = userServiceClass
+  }
+
+  public handleMiddelware (): express.RequestHandler {
     return (req, res, next): void => {
-      next()
+      const middleware = this.generate()
+      middleware(req, res, next)
+        .catch((e) => {
+          next(e)
+        })
     }
+  }
+
+  public setUserServiceClass (userServiceClass: Class): void {
+    this.userServiceClass = userServiceClass
   }
 }

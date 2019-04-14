@@ -1,7 +1,8 @@
-import { ConfigInterface } from '~/src/types/config';
+import { BaseMiddleware } from '~/src/middlewares/base_middleware';
+import { ConfigInterface } from '~/src/types/config'
 import { BaseError } from '~/src/errors/base_error'
 import { NotFoundError } from './errors'
-import Routes from '~/src/routes/route_drawer'
+import Routes, { RouteDrawer } from '~/src/routes/route_drawer'
 import { MongoDb } from './databases/mongodb'
 import { ParseAuthUserMiddleware, RequestId } from '~/src/middlewares'
 import express = require('express')
@@ -17,6 +18,7 @@ export default class Butterfly {
   public app: express.Express
   public server
   protected routes: Function
+  protected routeDrawer: RouteDrawer
   protected databaseConfigs
   protected databases: Database[] = []
   protected userServiceClass
@@ -29,7 +31,7 @@ export default class Butterfly {
     'butterfly:registerViewPaths': [],
     'butterfly:registerMiddlewares': [],
     'butterfly:drawRoutes': [],
-    'butterfly:registerErrorMiddleware': []
+    'butterfly:onError': []
   }
 
   public constructor (config: ConfigInterface) {
@@ -39,6 +41,7 @@ export default class Butterfly {
     })
     this.app = express()
     this.routes = routes
+    this.routeDrawer = Routes
     this.userServiceClass = userServiceClass
     this.useViewEngine = useViewEngine
     this.viewsPaths = viewsPaths || [path.join(process.cwd(), '/views')]
@@ -120,9 +123,18 @@ export default class Butterfly {
 
   protected async registerMiddlewares (): Promise<void> {
     const app = this.app
-    app.use(RequestId.default())
-    if (this.userServiceClass) app.use(ParseAuthUserMiddleware.default(this.userServiceClass))
-    await this.executeHookHandlers('butterfly:registerMiddlewares', app)
+
+    const middlewares: BaseMiddleware[] = [
+      new RequestId(),
+      new ParseAuthUserMiddleware()
+    ]
+
+    await this.executeHookHandlers('butterfly:registerMiddlewares', middlewares)
+
+    for (let middleware of middlewares) {
+      middleware.setUserServiceClass(this.userServiceClass)
+      app.use(middleware.handleMiddelware())
+    }
   }
 
   protected async registerErrorMiddleware (): Promise<void> {
@@ -136,29 +148,13 @@ export default class Butterfly {
 
     // Error handler
     app.use(async (error, req, res, next): Promise<void> => {
-      let errorResponse = error
-      if (error instanceof Error) {
-        const code = error['code']
-        if (code) {
-          res.status(!isNaN(parseInt(code, 10)) && code <= 504 ? code : 400)
-          errorResponse = BaseError.toJSON(new BaseError(error.name, error.message))
-        } else if (error.name === 'ValidationError' || error.name === 'CastError' || code === 'LIMIT_UNEXPECTED_FILE') {
-          res.status(400)
-        } else {
-          res.status(500)
-          errorResponse = {
-            message: error.message
-          }
-        }
-      }
-      console.log(error)
-      await this.executeHookHandlers('butterfly:registerErrorMiddleware', error)
-      res.json(errorResponse)
+      await this.executeHookHandlers('butterfly:onError', error)
+      res.json(error)
     })
   }
 
   protected async drawRoutes (): Promise<void> {
-    Routes.draw(this.app, this.routes)
+    this.routeDrawer.draw(this.app, this.routes)
     await this.executeHookHandlers('butterfly:drawRoutes', Routes, this.app)
   }
 }
