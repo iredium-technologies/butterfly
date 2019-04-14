@@ -135,7 +135,7 @@ export default class Butterfly {
     })
 
     // Error handler
-    app.use((error, req, res, next): void => {
+    app.use(async (error, req, res, next): Promise<void> => {
       let errorResponse = error
       if (error instanceof Error) {
         const code = error['code']
@@ -152,10 +152,9 @@ export default class Butterfly {
         }
       }
       console.log(error)
+      await this.executeHookHandlers('butterfly:registerErrorMiddleware', error)
       res.json(errorResponse)
     })
-
-    await this.executeHookHandlers('butterfly:registerErrorMiddleware', app)
   }
 
   protected async drawRoutes (): Promise<void> {
