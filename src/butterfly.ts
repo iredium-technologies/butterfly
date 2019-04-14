@@ -2,13 +2,14 @@ import { ConfigInterface } from '~/src/types/config';
 import { BaseError } from '~/src/errors/base_error'
 import { NotFoundError } from './errors'
 import Routes from '~/src/routes/route_drawer'
-import { mongodb } from './databases/mongodb'
+import { MongoDb } from './databases/mongodb'
 import { ParseAuthUserMiddleware, RequestId } from '~/src/middlewares'
 import express = require('express')
 import logger = require('morgan')
 import bodyParser = require('body-parser')
 import dotenv = require('dotenv')
 import path = require('path')
+import { Database } from './databases/database';
 
 const DEFAULT_VIEW_ENGINE = 'pug'
 
@@ -16,7 +17,8 @@ export default class Butterfly {
   public app: express.Express
   public server
   protected routes: Function
-  protected databases
+  protected databaseConfigs
+  protected databases: Database[] = []
   protected userServiceClass
   protected useViewEngine: boolean
   protected viewEngine: string | undefined
@@ -40,7 +42,7 @@ export default class Butterfly {
     this.useViewEngine = useViewEngine
     this.viewsPaths = viewsPaths || [path.join(process.cwd(), '/views')]
     this.viewEngine = viewEngine
-    this.databases = databases() || {
+    this.databaseConfigs = databases() || {
       mongo: {
         enable: false,
         host: process.env.MONGO_HOST,
@@ -55,7 +57,7 @@ export default class Butterfly {
   public async boot (): Promise<void> {
     const { PORT = 8080 } = process.env
     await this.setup()
-    this.connectDatabases()
+    await this.connectDatabases()
     await this.registerMiddlewares()
     await this.drawRoutes()
     await this.registerErrorMiddleware()
@@ -70,7 +72,10 @@ export default class Butterfly {
 
   public close (): Promise<void> {
     return new Promise((resolve): void => {
-      this.server.close((): void => {
+      this.server.close(async (): Promise<void> => {
+        for (let database of this.databases) {
+          await database.close()
+        }
         resolve()
       })
     })
@@ -99,8 +104,12 @@ export default class Butterfly {
     await this.executeHookHandlers('butterfly:setup', app)
   }
 
-  protected connectDatabases (): void {
-    if (this.databases.mongo.enable) mongodb(this.databases.mongo)
+  protected async connectDatabases (): Promise<void> {
+    if (this.databaseConfigs.mongo.enable) {
+      const mongoDb = new MongoDb()
+      await mongoDb.connect(this.databaseConfigs.mongo)
+      this.databases.push(mongoDb)
+    }
   }
 
   protected async registerMiddlewares (): Promise<void> {
