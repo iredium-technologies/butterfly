@@ -1,8 +1,8 @@
 import { UserInterface as Interface } from '~/src/models/user/interface'
 import { Schema } from '~/src/models/user/schema'
-import bcrypt from 'bcrypt'
 import { hashPassword } from '~/src/helpers/hash_password'
 import mongoose = require('mongoose')
+import { compareHash } from '~/src/helpers';
 
 Schema.methods.fullName = function (): string {
   return (this.firstName.trim() + ' ' + this.lastName.trim())
@@ -18,15 +18,7 @@ Schema.methods.isRoot = function (): boolean {
 }
 
 Schema.methods.comparePassword = function (candidatePassword): Promise<boolean> {
-  return new Promise((resolve, reject): void => {
-    bcrypt.compare(candidatePassword, this.password, (err, isMatch): void => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(isMatch)
-      }
-    })
-  })
+  return compareHash(candidatePassword, this.password)
 }
 
 Schema.pre('save', function (next): void {

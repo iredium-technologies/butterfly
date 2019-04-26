@@ -9,5 +9,5 @@ export interface UserInterface extends BaseModelInterface {
   fullName(): string;
   isAdmin(): boolean;
   isRoot(): boolean;
-  comparePassword(): boolean;
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
