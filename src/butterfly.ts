@@ -149,7 +149,12 @@ export default class Butterfly {
     // Error handler
     app.use(async (error, req, res, next): Promise<void> => {
       await this.executeHookHandlers('butterfly:onError', error)
-      res.json(error)
+      if (Object.keys(error || {}).length) {
+        res.json(error)
+      } else {
+        res.status(500)
+        res.json({error: process.env.NODE_ENV === 'development' && error.stack ? error.stack : 'something went wrong'})
+      }
     })
   }
 
