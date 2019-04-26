@@ -19,15 +19,17 @@ export class RouteModelBinding {
     for (let param in this.params) {
       const modelName = this.getModelName(param)
       const Model: mongoose.Model<BaseModelInterface> = mongoose.models[modelName]
-      const routeKeyName = Model['getRouteKeyName']() || '_id'
-      const query = {}
-      if (!['restore', 'destroy'].includes(this.method)) {
-        query['deleted_at'] = null
+      if (Model) {
+        const routeKeyName = Model['getRouteKeyName']() || '_id'
+        const query = {}
+        if (!['restore', 'destroy'].includes(this.method)) {
+          query['deleted_at'] = null
+        }
+        query[routeKeyName] = this.params[param]
+        const record = await Model.findOne(query).exec() as BaseModelInterface
+        if (!record) throw new NotFoundError()
+        records.push(record)
       }
-      query[routeKeyName] = this.params[param]
-      const record = await Model.findOne(query).exec() as BaseModelInterface
-      if (!record) throw new NotFoundError()
-      records.push(record)
     }
     return Promise.resolve(records)
   }
