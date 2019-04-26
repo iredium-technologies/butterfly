@@ -1,6 +1,6 @@
 import { RouteModelBinding } from '~/src/routes/route_model_binding'
 import { JsonResponse, ViewResponse } from '~/src/routes'
-import { RedirectResponse } from '~/src/routes/responses/redirect_response'
+import { RedirectResponse } from '~/src/routes/responses/redirect'
 
 /**
  * Handles controller execution and responds to user (API Express version).
