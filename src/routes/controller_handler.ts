@@ -1,5 +1,6 @@
 import { RouteModelBinding } from '~/src/routes/route_model_binding'
 import { JsonResponse, ViewResponse } from '~/src/routes'
+import { RedirectResponse } from '~/src/routes/responses/redirect_response'
 
 /**
  * Handles controller execution and responds to user (API Express version).
@@ -19,6 +20,8 @@ export const controllerHandler = (controller, method): Function => async (req, r
         res.status(controllerResponse.statusCode).json(await controllerResponse.render())
       } else if (controllerResponse.constructor.name === ViewResponse.name) {
         res.status(controllerResponse.statusCode).render(...await controllerResponse.render())
+      } else if (controllerResponse.constructor.name === RedirectResponse.name) {
+        res.redirect(controllerResponse.statusCode, ...await controllerResponse.render())
       } else {
         res.status(200).send(controllerResponse)
       }
