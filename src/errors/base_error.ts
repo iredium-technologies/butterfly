@@ -32,7 +32,7 @@ export class BaseError extends Error {
       error.code,
       error.payload
     )
-    return json
+    return {}
   }
 
   public static toString (error: BaseError): string {
