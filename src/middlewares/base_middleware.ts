@@ -3,16 +3,16 @@ import { Class } from '~/src/types/class';
 import { UserService } from '~/src/services'
 
 export abstract class BaseMiddleware {
-  public abstract generate (): express.RequestHandler
+  public abstract generate ({ databases }): express.RequestHandler
   protected userServiceClass: Class
 
   public constructor (userServiceClass: Class = UserService) {
     this.userServiceClass = userServiceClass
   }
 
-  public handleMiddelware (): express.RequestHandler {
+  public handleMiddelware ({ databases }): express.RequestHandler {
     return (req, res, next): void => {
-      const middleware = this.generate()
+      const middleware = this.generate({ databases })
       middleware(req, res, next)
         .catch((e) => {
           next(e)

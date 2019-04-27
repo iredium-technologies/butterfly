@@ -2,6 +2,8 @@ import mongoose = require('mongoose')
 import { Database } from './database';
 
 export class MongoDb extends Database {
+  public name = 'mongoDb'
+
   public async connect ({
     host = process.env.MONGO_HOST,
     port = process.env.MONGO_PORT,
@@ -29,6 +31,7 @@ export class MongoDb extends Database {
 
     mongoose.connect(mongoConn, { useNewUrlParser: true })
     this.adapter = mongoose
+    this.connection = db
   }
 
   public async close (): Promise<void> {

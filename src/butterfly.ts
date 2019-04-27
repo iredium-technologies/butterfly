@@ -133,7 +133,7 @@ export default class Butterfly {
 
     for (let middleware of middlewares) {
       middleware.setUserServiceClass(this.userServiceClass)
-      app.use(middleware.handleMiddelware())
+      app.use(middleware.handleMiddelware({ databases: this.databases }))
     }
   }
 
