@@ -13,10 +13,12 @@ export abstract class BaseMiddleware {
   public handleMiddelware (ctx = {}): express.RequestHandler {
     return (req, res, next): void => {
       const middleware = this.generate(ctx)
-      middleware(req, res, next)
-        .catch((e) => {
+      const promise = middleware(req, res, next)
+      if (promise && promise.catch) {
+        promise.catch((e) => {
           next(e)
         })
+      }
     }
   }
 
