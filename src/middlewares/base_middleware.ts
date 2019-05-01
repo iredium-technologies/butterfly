@@ -3,7 +3,7 @@ import { Class } from '~/src/types/class';
 import { UserService } from '~/src/services'
 
 export abstract class BaseMiddleware {
-  public abstract generate (ctx: object): express.RequestHandler
+  protected abstract generate (ctx: object): express.RequestHandler
   protected userServiceClass: Class
 
   public constructor (userServiceClass: Class = UserService) {
