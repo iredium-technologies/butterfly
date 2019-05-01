@@ -1,4 +1,5 @@
 export * from './crypto'
+export * from './hash'
 export * from './compare_hash'
 export * from './hash_password'
 export * from './is_class'
