@@ -63,11 +63,11 @@ export class BaseSchema extends mongoose.Schema {
 
     this.methods.softDelete = async function softDelete (user): Promise<mongoose.Document> {
       try {
-        this.set({ deleted_at: Date.now(), deleted_by: user._id })
+        this.set({ deleted_at: Date.now(), deleted_by: user ? user._id : null })
         if (this['unIndex']) await this.promisify('unIndex')
         return this.save()
       } catch (e) {
-        return this
+        return Promise.reject(e)
       }
     }
 
@@ -77,7 +77,7 @@ export class BaseSchema extends mongoose.Schema {
         if (this['index']) await this.promisify('index')
         return this.save()
       } catch (e) {
-        return this
+        return Promise.reject(e)
       }
     }
   }
