@@ -30,6 +30,7 @@ export const controllerHandler = (controller, method): Function => async (req, r
     }
     // Clear session error
     if (req.session) {
+      req.session['form'] = null
       req.session['error'] = null
     }
   } catch (error) {
