@@ -7,7 +7,7 @@ export class Crypto {
     const cryptoPassword: string = process.env.IREDIUM_CRYPTO_PASSWORD || ''
     var cipher = crypto.createCipher(algorithm, cryptoPassword)
     var crypted = cipher.update(text, 'utf8', outputEncoding)
-    crypted += cipher.final('hex')
+    crypted += cipher.final(outputEncoding)
     return crypted
   }
 
