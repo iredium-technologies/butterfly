@@ -22,7 +22,14 @@ export class BaseSchema extends mongoose.Schema {
       },
       timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
     }
-    super(schema, baseOptions)
+    const combinedSchema = {
+      ...schema,
+      ...{
+        deleted_at: { type: Date, default: null, protect: true },
+        deleted_by: { type: String, default: null, hidden: true, protect: true }
+      }
+    }
+    super(combinedSchema, baseOptions)
     this.populateUser = { select: 'id username first_name last_name default_address email' }
     this.defaultRouteKeyName = '_id'
     this.registerCommonStatics()
