@@ -28,6 +28,10 @@ export const controllerHandler = (controller, method): Function => async (req, r
     } else {
       next()
     }
+    // Clear session error
+    if (req.session) {
+      req.session['error'] = null
+    }
   } catch (error) {
     next(error)
   }
