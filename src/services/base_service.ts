@@ -12,11 +12,13 @@ export class BaseService {
   public populates
   public sort
   public populateUser
+  protected user
 
-  public constructor (Model, populates = null, sort = { created_at: -1 }) {
+  public constructor (Model, user = null, populates = null, sort = { created_at: -1 }) {
     this.Model = Model
     this.populates = populates
     this.sort = sort
+    this.user = user
     this.populateUser = { path: 'user', select: 'id username first_name last_name default_address' }
   }
 
@@ -88,9 +90,9 @@ export class BaseService {
     return this.get(record._id) as Promise<BaseModelInterface> // to re-evaluate virtuals
   }
 
-  public async delete (record, user): Promise<BaseModelInterface> {
+  public async delete (record): Promise<BaseModelInterface> {
     if (!record.deleted_at) {
-      return Promise.resolve(await record.softDelete(user))
+      return Promise.resolve(await record.softDelete(this.user))
     }
     return Promise.resolve(record)
   }

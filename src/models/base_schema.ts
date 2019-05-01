@@ -38,8 +38,40 @@ export class BaseSchema extends mongoose.Schema {
   }
 
   protected registerCommonMethods (): void {
-    this.methods.getRouteKeyName = function (): string {
+    this.methods.getRouteKeyName = (): string => {
       return this.defaultRouteKeyName
+    }
+
+    this.methods.promisify = function promisify (method): Promise<void> {
+      return new Promise((resolve, reject) => {
+        this[method]((error, res) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(res)
+          }
+        })
+      })
+    }
+
+    this.methods.softDelete = async function softDelete (user): Promise<mongoose.Document> {
+      try {
+        this.set({ deleted_at: Date.now(), deleted_by: user._id })
+        if (this['unIndex']) await this.promisify('unIndex')
+        return this.save()
+      } catch (e) {
+        return this
+      }
+    }
+
+    this.methods.restore = async function restore (): Promise<mongoose.Document> {
+      try {
+        this.set({ deleted_at: null })
+        if (this['index']) await this.promisify('index')
+        return this.save()
+      } catch (e) {
+        return this
+      }
     }
   }
 
