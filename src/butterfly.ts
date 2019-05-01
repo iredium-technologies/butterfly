@@ -1,7 +1,5 @@
-import { ClearSessionError } from './middlewares/clear_session_error'
 import { BaseMiddleware } from '~/src/middlewares/base_middleware'
 import { ConfigInterface } from '~/src/types/config'
-import { BaseError } from '~/src/errors/base_error'
 import { NotFoundError } from './errors'
 import Routes, { RouteDrawer } from '~/src/routes/route_drawer'
 import { MongoDb } from './databases/mongodb'
@@ -12,7 +10,6 @@ import bodyParser = require('body-parser')
 import dotenv = require('dotenv')
 import path = require('path')
 import { Database } from './databases/database'
-import { ClearSessionForm } from './middlewares/clear_session_form'
 
 const DEFAULT_VIEW_ENGINE = 'pug'
 
@@ -127,8 +124,6 @@ export default class Butterfly {
     const app = this.app
 
     const middlewares: BaseMiddleware[] = [
-      new ClearSessionError(),
-      new ClearSessionForm(),
       new RequestId(),
       new ParseAuthUserMiddleware()
     ]
