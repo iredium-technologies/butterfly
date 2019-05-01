@@ -1,6 +1,6 @@
 {
   "name": "@iredium/butterfly",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "Express API Framework",
   "repository": {
     "type": "git",
