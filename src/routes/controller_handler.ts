@@ -15,11 +15,6 @@ export const controllerHandler = (controller, method): Function => async (req, r
     const boundParams = [req].concat(paramRecords)
     controller.setUser(req.user)
     const controllerResponse = await controller[method](...boundParams)
-    // Clear session error
-    if (req.session) {
-      req.session['form'] = null
-      req.session['error'] = null
-    }
     if (controllerResponse) {
       if (controllerResponse.constructor.name === JsonResponse.name) {
         res.status(controllerResponse.statusCode).json(await controllerResponse.render())
