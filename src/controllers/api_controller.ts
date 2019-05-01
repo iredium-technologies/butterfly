@@ -64,7 +64,7 @@ export class ApiController extends BaseController {
    */
   public async destroy (req, record): Promise<BaseResponse> {
     this.authorize('destroy', record)
-    const result = await this.service.delete(record, this.user)
+    const result = await this.service.delete(record)
     return new JsonResponse(result)
   }
 

@@ -2,31 +2,29 @@ import { Class } from '~/src/types/class';
 import { BaseService } from '~/src/services/base_service'
 import { BasePolicy } from '~/src/policies/base_policy'
 import { UnauthorizedError } from '~/src/errors/unauthorized'
-import { UserInterface } from '~/src/models/user/interface'
-import mongoose = require('mongoose')
 
 export class BaseController {
-  protected PolicyClass
-  protected user: UserInterface
-  protected policy: BasePolicy
+  protected PolicyClass: Class
+  protected ServiceClass: Class
+  protected user
   protected service: BaseService
 
   public constructor (ServiceClass: Class, PolicyClass: Class) {
-    this.service = new ServiceClass()
+    this.ServiceClass = ServiceClass
     this.PolicyClass = PolicyClass
-    const User = mongoose.model('_User')
-    this.user = new User() as UserInterface
-    this.policy = new BasePolicy(this.user, null)
+    this.service = new ServiceClass()
+
   }
 
   public authorize (method, record = null): void {
-    this.policy = this.PolicyClass ? new this.PolicyClass(this.user, record) : new BasePolicy(this.user, record)
-    if (!this.policy[method](record)) {
+    const policy = this.PolicyClass ? new this.PolicyClass(this.user, record) : new BasePolicy(this.user, record)
+    if (!policy[method](record)) {
       throw new UnauthorizedError()
     }
   }
 
-  public setUser (user): void {
+  public init (user): void {
     this.user = user
+    this.service = new this.ServiceClass(user)
   }
 }

@@ -1,3 +1,4 @@
+import { BaseController } from './../controllers/base_controller';
 import { RouteModelBinding } from '~/src/routes/route_model_binding'
 import { JsonResponse, ViewResponse } from '~/src/routes'
 import { RedirectResponse } from '~/src/routes/responses/redirect'
@@ -7,13 +8,15 @@ import { RedirectResponse } from '~/src/routes/responses/redirect'
  * @param controller Controller instance.
  * @param method Controller instance method name
  */
-export const controllerHandler = (controller, method): Function => async (req, res, next): Promise<void> => {
+export const controllerHandler = (ControllerClass, method): Function => async (req, res, next): Promise<void> => {
   try {
+    const controller: BaseController = new ControllerClass()
+    if (!controller[method]) throw Error(`Controller's action "${method}" not found`)
+    controller.init(req.user)
     const params = req.params
     const routeModelBinding = new RouteModelBinding(params, method)
     const paramRecords = await routeModelBinding.getRouteRecords()
     const boundParams = [req].concat(paramRecords)
-    controller.setUser(req.user)
     const controllerResponse = await controller[method](...boundParams)
     if (controllerResponse) {
       if (controllerResponse.constructor.name === JsonResponse.name) {

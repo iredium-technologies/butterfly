@@ -51,20 +51,18 @@ export class RouteDrawer {
     const hasCallback = args.length > 2 && !isClass(args[args.length - 1])
     const basePath = args[0]
     const c = hasCallback ? args[args.length - 1] : null
-    const Controller = hasCallback ? args[args.length - 2] : args[args.length - 1]
+    const ControllerClass = hasCallback ? args[args.length - 2] : args[args.length - 1]
     const middlewares = hasCallback ? args.splice(1, args.length - 3).map((o): void => o.get ? o.get() : o) : args.splice(1, args.length - 2).map((o): void => o.get ? o.get() : o)
     const path = basePath.split('/')
     const param = pluralize.singular(path[path.length - 1])
     const actions = this.getActions(param)
-    const controller = new Controller()
 
-    if (process.env.NODE_ENV === 'development') console.log({path: args[0], middlewares, Controller})
+    if (process.env.NODE_ENV === 'development') console.log({path: args[0], middlewares, ControllerClass})
 
     for (let key in actions) {
       const m = ([] as void[]).concat(middlewares)
       const action = actions[key]
-      if (!controller[key]) throw Error(`Controller's action "${key}" not found`)
-      m.push(handle(controller, key) as unknown as void)
+      m.push(handle(ControllerClass, key) as unknown as void)
       router[action.method](action.path, ...m)
     }
 
