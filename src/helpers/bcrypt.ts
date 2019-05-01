@@ -1,6 +1,6 @@
 import bcrypt = require('bcrypt')
 
-const SALT_WORK_FACTOR = 10
+const SALT_WORK_FACTOR = process.env.SALT_WORK_FACTOR || 10
 
 function hashCallback (resolve, reject): Function {
   return function (err, hash): void {
@@ -16,13 +16,13 @@ function genSaltCallback (plainString, resolve, reject): Function {
   }
 }
 
-export const hashString = (plainString): Promise<string> => {
+export const generate = (plainString): Promise<string> => {
   return new Promise((resolve, reject): void => {
     bcrypt.genSalt(SALT_WORK_FACTOR, genSaltCallback(plainString, resolve, reject))
   })
 }
 
-export function compareStringToHash (plainString, hashedString): Promise<boolean> {
+export function compare (plainString, hashedString): Promise<boolean> {
   return new Promise((resolve, reject): void => {
     bcrypt.compare(plainString, hashedString, (err, isMatch): void => {
       if (err) {
