@@ -10,6 +10,7 @@ import bodyParser = require('body-parser')
 import dotenv = require('dotenv')
 import path = require('path')
 import { Database } from './databases/database'
+import { Redis } from './databases/redis'
 
 const DEFAULT_VIEW_ENGINE = 'pug'
 
@@ -114,9 +115,15 @@ export default class Butterfly {
 
   protected async connectDatabases (): Promise<void> {
     if (this.databaseConfigs.mongo.enable) {
-      const mongoDb = new MongoDb()
-      await mongoDb.connect(this.databaseConfigs.mongo)
+      const mongoDb = new MongoDb(this.databaseConfigs.mongo)
       this.databases.push(mongoDb)
+    }
+
+    if (this.databaseConfigs.redis.enable) {
+      const config = this.databaseConfigs.redis
+      if (config.password === null) delete config.password
+      const redis = new Redis(config)
+      this.databases.push(redis)
     }
   }
 
