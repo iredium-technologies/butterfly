@@ -19,9 +19,9 @@ export class Redis extends Database {
     })
   }
 
-  public set (key, value, expireTimeInSecond = null, callback: Function | null = null): void {
+  public set (key, value, expireTimeInMiliseconds = null, callback: Function | null = null): void {
     const args = [key, value]
-    if (expireTimeInSecond) args.push('EX', expireTimeInSecond)
+    if (expireTimeInMiliseconds) args.push('PX', expireTimeInMiliseconds)
     if (callback) args.push(callback)
     this.connection.set(...args)
   }
