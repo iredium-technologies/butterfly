@@ -20,7 +20,7 @@ export class ApiController extends BaseController {
       limit: req.query.limit,
       query: Object.assign(req.query, { deleted_at: null })
     })
-    return new JsonResponse(await pagination.getData(), await pagination.getMeta())
+    return new JsonResponse(pagination.getData(), pagination.getMeta())
   }
 
   /**
