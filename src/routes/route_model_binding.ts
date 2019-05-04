@@ -18,7 +18,10 @@ export class RouteModelBinding {
     const records: BaseModelInterface[] = []
     for (let param in this.params) {
       const modelName = this.getModelName(param)
-      const Model: mongoose.Model<BaseModelInterface> = mongoose.models[modelName]
+      let Model: mongoose.Model<BaseModelInterface> = mongoose.models[modelName]
+      if (!Model) {
+        Model = mongoose.models[`_${modelName}`]
+      }
       if (Model) {
         const routeKeyName = Model['getRouteKeyName']() || '_id'
         const query = {}

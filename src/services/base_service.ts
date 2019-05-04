@@ -12,6 +12,7 @@ export class BaseService {
   public populates
   public sort
   public populateUser
+  public keys: string[]
   protected user
 
   public constructor (Model, user = null, populates = null, sort = { created_at: -1 }) {
@@ -20,18 +21,22 @@ export class BaseService {
     this.sort = sort
     this.user = user
     this.populateUser = { path: 'user', select: 'id username first_name last_name default_address' }
+    this.keys = Object.keys(Model['schema']['tree'])
   }
 
-  public paginate ({ options = {}, query = {}, offset = DEFAULT_OFFSET, limit = DEFAULT_LIMIT } = {}): Promise<Pagination> {
-    return Promise.resolve(new Pagination({
+  public async paginate ({ options = {}, query = {}, offset = DEFAULT_OFFSET, limit = DEFAULT_LIMIT } = {}): Promise<Pagination> {
+    const pagination = new Pagination({
       Model: this.Model,
       offset: this.parseInt(offset, DEFAULT_OFFSET),
       limit: this.parseInt(limit, DEFAULT_LIMIT),
       sort: this.sort,
       populates: this.populates,
-      query,
+      query: query,
+      filteredQuery: this.filterQuery(query),
       options
-    }))
+    })
+
+    return pagination.run()
   }
 
   /**
@@ -47,7 +52,7 @@ export class BaseService {
    *
    */
   public find ({ query = {}, where = {}, offset = DEFAULT_OFFSET, limit = DEFAULT_LIMIT, sort = '-created_at' } = {}): Promise<BaseModelInterface[]> {
-    const result = this.Model.find(query)
+    const result = this.Model.find(this.filterQuery(query))
     for (let key in where) {
       for (let operator in where[key]) {
         result.where(key)[operator](where[key][operator])
@@ -108,5 +113,16 @@ export class BaseService {
     const number = parseInt(str as unknown as string, 10)
     if (isNaN(number)) return fallback
     return number
+  }
+
+  protected filterQuery (query): object {
+    const validKeys = this.keys
+    const filterQuery = {}
+    for (let key in query) {
+      if (validKeys.includes(key)) {
+        filterQuery[key] = query[key]
+      }
+    }
+    return filterQuery
   }
 }

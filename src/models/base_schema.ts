@@ -22,7 +22,14 @@ export class BaseSchema extends mongoose.Schema {
       },
       timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
     }
-    super(schema, baseOptions)
+    const combinedSchema = {
+      ...schema,
+      ...{
+        deleted_at: { type: Date, default: null, protect: true },
+        deleted_by: { type: String, default: null, hidden: true, protect: true }
+      }
+    }
+    super(combinedSchema, baseOptions)
     this.populateUser = { select: 'id username first_name last_name default_address email' }
     this.defaultRouteKeyName = '_id'
     this.registerCommonStatics()
@@ -56,11 +63,11 @@ export class BaseSchema extends mongoose.Schema {
 
     this.methods.softDelete = async function softDelete (user): Promise<mongoose.Document> {
       try {
-        this.set({ deleted_at: Date.now(), deleted_by: user._id })
+        this.set({ deleted_at: Date.now(), deleted_by: user ? user._id : null })
         if (this['unIndex']) await this.promisify('unIndex')
         return this.save()
       } catch (e) {
-        return this
+        return Promise.reject(e)
       }
     }
 
@@ -70,7 +77,7 @@ export class BaseSchema extends mongoose.Schema {
         if (this['index']) await this.promisify('index')
         return this.save()
       } catch (e) {
-        return this
+        return Promise.reject(e)
       }
     }
   }
