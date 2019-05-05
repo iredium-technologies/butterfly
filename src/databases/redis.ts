@@ -6,7 +6,7 @@ let connection = null
 export class Redis extends Database {
   public name = 'redis'
 
-  public get (key: string, callback: Function | null = null): Promise<void> {
+  public get (key: string, callback: Function | null = null): Promise<string> {
     return new Promise((resolve, reject): void => {
       this.connection.get(key, function (err, reply) {
         if (callback) callback(err, reply)
