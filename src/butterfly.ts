@@ -17,6 +17,7 @@ const DEFAULT_VIEW_ENGINE = 'pug'
 export default class Butterfly {
   public app: express.Express
   public server
+  protected booted: boolean = false
   protected routes: Function
   protected routeDrawer: RouteDrawer
   protected databaseConfigs
@@ -59,6 +60,7 @@ export default class Butterfly {
   }
 
   public async boot (): Promise<void> {
+    if (this.booted) return
     const { PORT = 8080 } = process.env
     await this.setup()
     await this.connectDatabases()
@@ -71,6 +73,7 @@ export default class Butterfly {
         port: PORT,
       })
     })
+    this.booted = true
   }
 
   public hook (name: string, handler: Function): void {
