@@ -1,7 +1,7 @@
 # Butterfly
 
-[![NPM version](https://img.shields.io/npm/v/butterfly.svg?style=flat)](https://npmjs.com/package/butterfly)
-[![NPM downloads](https://img.shields.io/npm/dm/butterfly.svg?style=flat)](https://npmjs.com/package/butterfly)
+[![NPM version](https://img.shields.io/npm/v/@iredium/butterfly.svg?style=flat)](https://npmjs.com/package/butterfly)
+[![NPM downloads](https://img.shields.io/npm/dm/@iredium/butterfly.svg?style=flat)](https://npmjs.com/package/butterfly)
 
 ## Description
 
