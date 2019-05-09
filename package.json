@@ -50,7 +50,6 @@
     "email-templates": "^5.0.4",
     "express": "^4.16.2",
     "firebase-admin": "^5.12.1",
-    "hiredis": "^0.5.0",
     "json-loader": "^0.5.7",
     "kue": "^0.11.6",
     "mongoosastic": "^4.4.1",
