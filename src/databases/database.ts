@@ -1,7 +1,12 @@
 export abstract class Database {
   public abstract name: string
   public connection
+  protected config
   protected adapter
-  public abstract connect (config: object);
+  public constructor (config = {}) {
+    this.config = config
+    this.connect()
+  }
+  public abstract connect ();
   public abstract close ();
 }

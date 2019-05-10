@@ -10,12 +10,14 @@ import bodyParser = require('body-parser')
 import dotenv = require('dotenv')
 import path = require('path')
 import { Database } from './databases/database'
+import { Redis } from './databases/redis'
 
 const DEFAULT_VIEW_ENGINE = 'pug'
 
 export default class Butterfly {
   public app: express.Express
   public server
+  protected booted: boolean = false
   protected routes: Function
   protected routeDrawer: RouteDrawer
   protected databaseConfigs
@@ -58,6 +60,7 @@ export default class Butterfly {
   }
 
   public async boot (): Promise<void> {
+    if (this.booted) return
     const { PORT = 8080 } = process.env
     await this.setup()
     await this.connectDatabases()
@@ -70,6 +73,7 @@ export default class Butterfly {
         port: PORT,
       })
     })
+    this.booted = true
   }
 
   public hook (name: string, handler: Function): void {
@@ -114,9 +118,15 @@ export default class Butterfly {
 
   protected async connectDatabases (): Promise<void> {
     if (this.databaseConfigs.mongo.enable) {
-      const mongoDb = new MongoDb()
-      await mongoDb.connect(this.databaseConfigs.mongo)
+      const mongoDb = new MongoDb(this.databaseConfigs.mongo)
       this.databases.push(mongoDb)
+    }
+
+    if (this.databaseConfigs.redis.enable) {
+      const config = this.databaseConfigs.redis
+      if (config.password === null) delete config.password
+      const redis = new Redis(config)
+      this.databases.push(redis)
     }
   }
 
