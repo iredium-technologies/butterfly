@@ -1,3 +1,4 @@
+import { BaseError } from './errors/base_error';
 import { BaseListener } from '~/src/listeners'
 import { Event } from '~/src/events/event'
 import { BaseMiddleware } from '~/src/middlewares/base_middleware'
@@ -33,6 +34,7 @@ export default class Butterfly {
   protected hooks = {
     'butterfly:setup': [],
     'butterfly:ready': [],
+    'butterfly:registerEventListener': [],
     'butterfly:registerViewPaths': [],
     'butterfly:registerMiddlewares': [],
     'butterfly:drawRoutes': [],
@@ -75,7 +77,7 @@ export default class Butterfly {
     if (this.booted) return
     const { PORT = 8080 } = process.env
     await this.bootModules()
-    await this.initEventListener()
+    await this.registerEventListener()
     await this.setup()
     await this.connectDatabases()
     await this.registerMiddlewares()
@@ -127,13 +129,16 @@ export default class Butterfly {
 
   protected async executeHookHandlers (name, ...args): Promise<void> {
     const handlers = this.hooks[name]
+    if (!handlers) throw new BaseError('Execute Handler Failed', `there is no hook named "${name}"`)
     for (let handler of handlers) {
       await handler(...args)
     }
   }
 
-  protected async initEventListener (): Promise<void> {
-    for (let eventListener of this.eventListenerMap) {
+  protected async registerEventListener (): Promise<void> {
+    const moduleEventListenerMap = []
+    await this.executeHookHandlers('butterfly:registerEventListener', moduleEventListenerMap)
+    for (let eventListener of [...moduleEventListenerMap, ...this.eventListenerMap]) {
       const eventClassModule = await eventListener.event()
       const eventClass = eventClassModule[Object.keys(eventClassModule)[0]]
       for (let listenerModuleImport of eventListener.listeners) {
@@ -142,7 +147,6 @@ export default class Butterfly {
         const listenerClass = listenerClassModule[listenerClassName]
         const event: Event = new eventClass()
         const listener: BaseListener = new listenerClass()
-
         Event.on(event.name, ($event): void => {
           listener.handle($event)
         })
