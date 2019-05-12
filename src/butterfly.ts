@@ -71,24 +71,6 @@ export default class Butterfly {
     }
   }
 
-  public async bootModules (): Promise<void> {
-    for (let moduleImport of this.modules) {
-      const modules = await moduleImport()
-      const moduleNames = Object.keys(modules)
-
-      for (let moduleName of moduleNames) {
-        const module = modules[moduleName]
-        if (module && typeof module === 'function') {
-          module({
-            hook: (name, handler): void => {
-              this.hook(name, handler)
-            }
-          })
-        }
-      }
-    }
-  }
-
   public async boot (): Promise<void> {
     if (this.booted) return
     const { PORT = 8080 } = process.env
@@ -106,6 +88,24 @@ export default class Butterfly {
       })
     })
     this.booted = true
+  }
+
+  public async bootModules (): Promise<void> {
+    for (let moduleImport of this.modules) {
+      const modules = await moduleImport()
+      const moduleNames = Object.keys(modules)
+
+      for (let moduleName of moduleNames) {
+        const module = modules[moduleName]
+        if (module && typeof module === 'function') {
+          module({
+            hook: (name, handler): void => {
+              this.hook(name, handler)
+            }
+          })
+        }
+      }
+    }
   }
 
   public hook (name: string, handler: Function): void {
