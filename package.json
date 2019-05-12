@@ -1,6 +1,6 @@
 {
   "name": "@iredium/butterfly",
-  "version": "0.0.64",
+  "version": "0.0.65",
   "description": "Express API Framework",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
     "lib"
   ],
   "scripts": {
-    "dev": "backpack dev --inspect=0.0.0.0:9230 --nolazy",
+    "dev": "backpack dev",
     "build": "tsc --project tsconfig.build.json && tscpaths -s ./src -p tsconfig.build.json -o ./lib",
     "tsc": "tsc",
     "start": "node dist/example.js",

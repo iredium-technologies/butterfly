@@ -7,4 +7,5 @@ export interface ConfigInterface {
   useViewEngine?: boolean;
   viewEngine?: string;
   viewsPaths?: string[];
+  modules?: Function[];
 }

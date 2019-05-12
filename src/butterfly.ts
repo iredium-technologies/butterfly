@@ -26,6 +26,7 @@ export default class Butterfly {
   protected useViewEngine: boolean
   protected viewEngine: string | undefined
   protected viewsPaths: (string | undefined)[]
+  protected modules: Function[]
   protected hooks = {
     'butterfly:setup': [],
     'butterfly:ready': [],
@@ -47,6 +48,7 @@ export default class Butterfly {
     this.useViewEngine = useViewEngine
     this.viewsPaths = viewsPaths || [path.join(process.cwd(), '/views')]
     this.viewEngine = viewEngine
+    this.modules = config.modules || []
     this.databaseConfigs = databases() || {
       mongo: {
         enable: false,
@@ -59,9 +61,28 @@ export default class Butterfly {
     }
   }
 
+  public async bootModules (): Promise<void> {
+    for (let moduleImport of this.modules) {
+      const modules = await moduleImport()
+      const moduleNames = Object.keys(modules)
+
+      for (let moduleName of moduleNames) {
+        const module = modules[moduleName]
+        if (module && typeof module === 'function') {
+          module({
+            hook: (name, handler): void => {
+              this.hook(name, handler)
+            }
+          })
+        }
+      }
+    }
+  }
+
   public async boot (): Promise<void> {
     if (this.booted) return
     const { PORT = 8080 } = process.env
+    await this.bootModules()
     await this.setup()
     await this.connectDatabases()
     await this.registerMiddlewares()

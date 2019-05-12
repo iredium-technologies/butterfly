@@ -5,5 +5,8 @@ import { databases } from '~/example/config/databases'
 export default {
   userServiceClass: UserService,
   routes,
-  databases
+  databases,
+  modules: [
+    () => import('~/example/modules/demo')
+  ]
 }
