@@ -1,5 +1,7 @@
+import { BaseListener } from '~/src/listeners'
+import { Event } from '~/src/events/event'
 import { BaseMiddleware } from '~/src/middlewares/base_middleware'
-import { ConfigInterface } from '~/src/types/config'
+import { ConfigInterface, EventListener } from '~/src/types/config'
 import { NotFoundError } from './errors'
 import Routes, { RouteDrawer } from '~/src/routes/route_drawer'
 import { MongoDb } from './databases/mongodb'
@@ -26,6 +28,11 @@ export default class Butterfly {
   protected useViewEngine: boolean
   protected viewEngine: string | undefined
   protected viewsPaths: (string | undefined)[]
+<<<<<<< Updated upstream
+=======
+  protected modules: Function[]
+  protected eventListenerMap: EventListener[]
+>>>>>>> Stashed changes
   protected hooks = {
     'butterfly:setup': [],
     'butterfly:ready': [],
@@ -36,7 +43,13 @@ export default class Butterfly {
   }
 
   public constructor (config: ConfigInterface) {
-    const { routes, databases, userServiceClass, useViewEngine = false, viewEngine = DEFAULT_VIEW_ENGINE, viewsPaths } = config
+    const { routes,
+      databases,
+      userServiceClass,
+      useViewEngine = false,
+      viewEngine = DEFAULT_VIEW_ENGINE,
+      viewsPaths,
+      eventListenerMap } = config
     dotenv.config({
       path: path.resolve(process.cwd(), process.env.NODE_ENV === 'test' ? '.env.test' : '.env')
     })
@@ -47,6 +60,11 @@ export default class Butterfly {
     this.useViewEngine = useViewEngine
     this.viewsPaths = viewsPaths || [path.join(process.cwd(), '/views')]
     this.viewEngine = viewEngine
+<<<<<<< Updated upstream
+=======
+    this.modules = config.modules || []
+    this.eventListenerMap = eventListenerMap || []
+>>>>>>> Stashed changes
     this.databaseConfigs = databases() || {
       mongo: {
         enable: false,
@@ -62,6 +80,11 @@ export default class Butterfly {
   public async boot (): Promise<void> {
     if (this.booted) return
     const { PORT = 8080 } = process.env
+<<<<<<< Updated upstream
+=======
+    await this.bootModules()
+    await this.initEventListener()
+>>>>>>> Stashed changes
     await this.setup()
     await this.connectDatabases()
     await this.registerMiddlewares()
@@ -97,6 +120,24 @@ export default class Butterfly {
     const handlers = this.hooks[name]
     for (let handler of handlers) {
       await handler(...args)
+    }
+  }
+
+  protected async initEventListener (): Promise<void> {
+    for (let eventListener of this.eventListenerMap) {
+      const eventClassModule = await eventListener.event()
+      const eventClass = eventClassModule[Object.keys(eventClassModule)[0]]
+      for (let listenerModuleImport of eventListener.listeners) {
+        const listenerClassModule = await listenerModuleImport()
+        const listenerClassName = Object.keys(listenerClassModule)[0]
+        const listenerClass = listenerClassModule[listenerClassName]
+        const event: Event = new eventClass()
+        const listener: BaseListener = new listenerClass()
+
+        Event.on(event.name, ($event): void => {
+          listener.handle($event)
+        })
+      }
     }
   }
 
