@@ -4,6 +4,7 @@ import mongoose = require('mongoose')
 export class BaseSchema extends mongoose.Schema {
   public statics
   public methods
+  public wasNew: boolean
   protected defaultRouteKeyName
   protected populateUser
 
@@ -30,6 +31,7 @@ export class BaseSchema extends mongoose.Schema {
       }
     }
     super(combinedSchema, baseOptions)
+    this.wasNew = false
     this.populateUser = { select: 'id username first_name last_name default_address email' }
     this.defaultRouteKeyName = '_id'
     this.registerCommonStatics()
@@ -83,7 +85,10 @@ export class BaseSchema extends mongoose.Schema {
   }
 
   protected registerCommonPres (): void {
-
+    this.pre('save', function (next) {
+      this['wasNew'] = this.isNew
+      next()
+    })
   }
 
   protected registerPlugins (): void {

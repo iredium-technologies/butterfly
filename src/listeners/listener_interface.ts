@@ -1,5 +1,5 @@
-import { BaseEvent } from '~/src/events/base_event'
+import { Event } from '~/src/events/event'
 
 export interface ListenerInterface {
-  handle (event: BaseEvent): void;
+  handle (event: Event): void;
 }

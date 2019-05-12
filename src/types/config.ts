@@ -1,5 +1,10 @@
 import { Class } from '~/src/types/class';
 
+export interface EventListener {
+  event: Function;
+  listeners: Function[];
+}
+
 export interface ConfigInterface {
   routes: Function;
   databases: Function;
@@ -8,4 +13,5 @@ export interface ConfigInterface {
   viewEngine?: string;
   viewsPaths?: string[];
   modules?: Function[];
+  eventListenerMap?: EventListener[];
 }

@@ -1,3 +1,2 @@
-export * from './base_event'
-export * from './emitter'
+export * from './event'
 export * from './event_interface'
