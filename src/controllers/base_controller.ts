@@ -12,7 +12,7 @@ export class BaseController {
   public constructor (ServiceClass: Class, PolicyClass: Class) {
     this.ServiceClass = ServiceClass
     this.PolicyClass = PolicyClass
-    this.service = new ServiceClass()
+    this.service = ServiceClass ? new ServiceClass() : null
 
   }
 
@@ -25,6 +25,6 @@ export class BaseController {
 
   public init (user): void {
     this.user = user
-    this.service = new this.ServiceClass(user)
+    this.service = this.ServiceClass ? new this.ServiceClass(user) : null
   }
 }
