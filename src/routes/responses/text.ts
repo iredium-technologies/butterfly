@@ -10,6 +10,7 @@ export class TextResponse extends BaseResponse {
   }
 
   public render (res: express.Response): void {
+    res.type('text/plain')
     res.send(this.text)
   }
 }
