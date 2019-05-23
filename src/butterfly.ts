@@ -222,6 +222,7 @@ export default class Butterfly {
         if (process.env.NODE_ENV !== 'production') {
           errorResponse['stack'] = error.stack
         }
+        res.status(error.code || 500)
         res.json(errorResponse)
       } else {
         res.status(500)

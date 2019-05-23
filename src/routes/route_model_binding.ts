@@ -14,7 +14,7 @@ export class RouteModelBinding {
     this.method = method
   }
 
-  public async getRouteRecords (): Promise<object> {
+  public async getRouteRecords (): Promise<BaseModelInterface[]> {
     const records: BaseModelInterface[] = []
     for (let param in this.params) {
       const modelName = this.getModelName(param)

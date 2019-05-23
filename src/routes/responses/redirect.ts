@@ -1,4 +1,5 @@
 import { BaseResponse } from '~/src/routes/responses/base_response'
+import express = require('express')
 
 export class RedirectResponse extends BaseResponse {
   protected path: string
@@ -9,7 +10,7 @@ export class RedirectResponse extends BaseResponse {
     this.path = path
   }
 
-  public async render (): Promise<(string)> {
-    return this.path
+  public render (res: express.Response): void {
+    res.redirect(this.statusCode, this.path)
   }
 }

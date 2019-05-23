@@ -1,4 +1,5 @@
 import { BaseResponse } from '~/src/routes/responses/base_response'
+import express = require('express')
 
 export class ViewResponse extends BaseResponse {
   protected path: string
@@ -10,7 +11,7 @@ export class ViewResponse extends BaseResponse {
     this.data = data
   }
 
-  public async render (): Promise<(object | string)[]> {
-    return [this.path, this.data]
+  public render (res: express.Response): void {
+    res.render(this.path, this.data)
   }
 }

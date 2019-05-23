@@ -1,3 +1,5 @@
+import express = require('express')
+
 export interface ResponseInterface {
-  render();
+  render(res: express.Response);
 }

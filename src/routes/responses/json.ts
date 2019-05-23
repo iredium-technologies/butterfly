@@ -1,4 +1,5 @@
 import { BaseResponse } from '~/src/routes/responses/base_response'
+import express = require('express')
 
 export class JsonResponse extends BaseResponse {
   protected responseData = {}
@@ -10,21 +11,12 @@ export class JsonResponse extends BaseResponse {
     this.responseMeta = meta
   }
 
-  public render (): object {
-    return this.toJSONResponse(this.responseData, this.responseMeta)
+  public render (res: express.Response): void {
+    const json = this.toJSONResponse(this.responseData, this.responseMeta)
+    res.json(json)
   }
 
-  public data (data): BaseResponse {
-    this.responseData = data
-    return this
-  }
-
-  public meta (meta): BaseResponse {
-    this.responseMeta = meta
-    return this
-  }
-
-  public async toJSONResponse (data, meta = {}): Promise<object> {
+  protected toJSONResponse (data, meta = {}): object {
     return {
       data,
       meta: {
