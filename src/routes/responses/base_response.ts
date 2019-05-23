@@ -3,10 +3,11 @@ import express = require('express')
 
 export abstract class BaseResponse implements ResponseInterface {
   public statusCode
-  public cookieArgs
+  public cookieArgs: (string|number|object)[]
 
   public constructor () {
     this.statusCode = 200
+    this.cookieArgs = []
   }
 
   public status (status): BaseResponse {
@@ -14,13 +15,16 @@ export abstract class BaseResponse implements ResponseInterface {
     return this
   }
 
-  public cookie (...args): BaseResponse {
-    this.cookieArgs = args
+  public cookie (name: string, ...args): BaseResponse {
+    this.cookieArgs.push([name, ...args])
     return this
   }
 
   public executeRender (res: express.Response): void {
     res.status(this.statusCode)
+    for (let cookieArg of this.cookieArgs) {
+      res.cookie(...cookieArg as [string, (string|number|object)])
+    }
     this.render(res)
   }
 
