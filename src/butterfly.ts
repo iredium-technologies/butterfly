@@ -27,6 +27,7 @@ export default class Butterfly {
   protected databases: Database[] = []
   protected userServiceClass
   protected useViewEngine: boolean
+  protected useDefaultLogger: boolean
   protected viewEngine: string | undefined
   protected viewsPaths: (string | undefined)[]
   protected modules: Function[]
@@ -60,6 +61,7 @@ export default class Butterfly {
     this.viewsPaths = viewsPaths || [path.join(process.cwd(), '/views')]
     this.viewEngine = viewEngine
     this.modules = config.modules || []
+    this.useDefaultLogger = config.useDefaultLogger || true
     this.eventListenerMap = eventListenerMap || []
     this.databaseConfigs = databases() || {
       mongo: {
@@ -157,9 +159,11 @@ export default class Butterfly {
   protected async setup (): Promise<void> {
     const app = this.app
     app.disable('x-powered-by')
-    app.use(logger('dev', {
-      skip: (): boolean => app.get('env') === 'test'
-    }))
+    if (this.useDefaultLogger) {
+      app.use(logger('dev', {
+        skip: (): boolean => app.get('env') === 'test'
+      }))
+    }
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
     if (this.useViewEngine) {

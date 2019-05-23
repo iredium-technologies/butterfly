@@ -10,6 +10,7 @@ export interface ConfigInterface {
   databases: Function;
   userServiceClass: Class;
   useViewEngine?: boolean;
+  useDefaultLogger?: boolean;
   viewEngine?: string;
   viewsPaths?: string[];
   modules?: Function[];
