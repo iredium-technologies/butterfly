@@ -46,6 +46,7 @@ export default class Butterfly {
     const { routes,
       databases,
       userServiceClass,
+      useDefaultLogger = true,
       useViewEngine = false,
       viewEngine = DEFAULT_VIEW_ENGINE,
       viewsPaths,
@@ -61,7 +62,7 @@ export default class Butterfly {
     this.viewsPaths = viewsPaths || [path.join(process.cwd(), '/views')]
     this.viewEngine = viewEngine
     this.modules = config.modules || []
-    this.useDefaultLogger = config.useDefaultLogger || true
+    this.useDefaultLogger = useDefaultLogger
     this.eventListenerMap = eventListenerMap || []
     this.databaseConfigs = databases() || {
       mongo: {
