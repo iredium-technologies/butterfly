@@ -17,7 +17,7 @@ import { Redis } from './databases/redis'
 
 const DEFAULT_VIEW_ENGINE = 'pug'
 
-export default class Butterfly {
+class App {
   public app: express.Express
   public server
   protected booted: boolean = false
@@ -241,3 +241,7 @@ export default class Butterfly {
     await this.executeHookHandlers('butterfly:drawRoutes', Routes, this.app)
   }
 }
+
+export default App
+
+export const Butterfly = App
