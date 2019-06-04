@@ -217,21 +217,20 @@ class App {
     // Error handler
     app.use(async (error, req, res, next): Promise<void> => {
       await this.executeHookHandlers('butterfly:onError', error)
-      const code = error.code ||
-        error.response ? error.response.status : null ||
-        500
+      const requestError = (error && error.response) ? error.response.data : null
 
       if (Object.keys(error || {}).length) {
-        const errorResponse = {
+        const appError = {
           name: error.name,
           message: error.message,
-          code,
+          code: error.code || 500,
           payload: error.payload
         }
         if (process.env.NODE_ENV !== 'production') {
-          errorResponse['stack'] = error.stack
+          appError['stack'] = error.stack
         }
-        res.status(code)
+        const errorResponse = requestError || appError
+        res.status(errorResponse.code)
         res.json(errorResponse)
       } else {
         res.status(500)
