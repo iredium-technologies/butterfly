@@ -1,3 +1,4 @@
+import { WorkerQueue } from './types'
 import { BaseError } from './errors/base_error';
 import { BaseListener } from '~/src/listeners'
 import { Job } from '~/src/jobs'
@@ -97,14 +98,9 @@ class App {
     this.booted = true
   }
 
-  public worker (Jobs: object): string[] {
+  public worker (queue: WorkerQueue, Jobs: object): string[] { // eslint-disable-line
     if (this.jobs.length) return this.jobs
 
-    const createQueue = require('kue').createQueue // eslint-disable-line
-    const redisConfig = this.databaseConfigs.redis || {}
-    const redisHost = redisConfig.host
-    const redisPort = redisConfig.port
-    const queue = createQueue({ redis: `redis://${redisHost}:${redisPort}` })
     let jobs: string[] = []
     const keys = Object.keys(Jobs)
 
