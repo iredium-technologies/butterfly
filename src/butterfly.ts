@@ -1,5 +1,6 @@
 import { BaseError } from './errors/base_error';
 import { BaseListener } from '~/src/listeners'
+import { Job } from '~/src/jobs'
 import { Event } from '~/src/events/event'
 import { BaseMiddleware } from '~/src/middlewares/base_middleware'
 import { ConfigInterface, EventListener } from '~/src/types/config'
@@ -32,6 +33,7 @@ class App {
   protected viewsPaths: (string | undefined)[]
   protected modules: Function[]
   protected eventListenerMap: EventListener[]
+  protected jobs: string[] = []
   protected hooks = {
     'butterfly:setup': [],
     'butterfly:ready': [],
@@ -93,6 +95,33 @@ class App {
       })
     })
     this.booted = true
+  }
+
+  public worker (Jobs: object): string[] {
+    if (this.jobs.length) return this.jobs
+
+    const createQueue = require('kue') // eslint-disable-line
+    const redisConfig = this.databaseConfigs.redis || {}
+    const redisHost = redisConfig.host
+    const redisPort = redisConfig.port
+    const queue = createQueue({ redis: `redis://${redisHost}:${redisPort}` })
+    let jobs: string[] = []
+    const keys = Object.keys(Jobs)
+
+    for (let key of keys) {
+      if (key[0] !== '_') {
+        const Job = Jobs[key]
+        const job: Job = new Job()
+        if (job.name) {
+          queue.process(job.name, job.maxActiveJob | 1, job.perform)
+          jobs.push(job.name)
+        }
+      }
+    }
+
+    this.jobs = jobs
+
+    return jobs
   }
 
   public async bootModules (): Promise<void> {
