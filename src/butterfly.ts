@@ -100,7 +100,7 @@ class App {
   public worker (Jobs: object): string[] {
     if (this.jobs.length) return this.jobs
 
-    const createQueue = require('kue') // eslint-disable-line
+    const createQueue = require('kue').createQueue // eslint-disable-line
     const redisConfig = this.databaseConfigs.redis || {}
     const redisHost = redisConfig.host
     const redisPort = redisConfig.port
