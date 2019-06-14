@@ -109,7 +109,9 @@ class App {
         const Job = Jobs[key]
         const job: Job = new Job()
         if (job.name) {
-          queue.process(job.name, job.maxActiveJob | 1, job.perform)
+          queue.process(job.name, job.maxActiveJob | 1, (data, done): void => {
+            job.perform(data, done)
+          })
           jobs.push(job.name)
         }
       }
