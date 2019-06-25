@@ -21,7 +21,7 @@ export abstract class BaseResponse implements ResponseInterface {
   }
 
   public executeRender (res: express.Response): void {
-    res.status(this.statusCode)
+    res.status(this.statusCode || 200)
     for (let cookieArg of this.cookieArgs) {
       res.cookie(...cookieArg as [string, (string|number|object)])
     }
