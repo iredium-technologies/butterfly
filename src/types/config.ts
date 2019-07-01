@@ -5,6 +5,8 @@ export interface EventListener {
   listeners: Function[];
 }
 
+export type ButterflyModule = (Function | (Function | object)[])[]
+
 export interface ConfigInterface {
   routes: Function;
   databases: Function;
@@ -13,6 +15,6 @@ export interface ConfigInterface {
   useDefaultLogger?: boolean;
   viewEngine?: string;
   viewsPaths?: string[];
-  modules?: Function[];
+  modules?: ButterflyModule;
   eventListenerMap?: EventListener[];
 }

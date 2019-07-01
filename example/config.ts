@@ -8,6 +8,9 @@ export default {
   routes,
   databases,
   modules: [
+    [() => import('~/example/modules/demo'), {
+      ayam: 1
+    }],
     () => import('~/example/modules/demo')
   ],
   eventListenerMap

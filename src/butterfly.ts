@@ -1,3 +1,4 @@
+import { ButterflyModule } from './types/config';
 import { WorkerQueue } from './types'
 import { BaseError } from './errors/base_error';
 import { BaseListener } from '~/src/listeners'
@@ -32,7 +33,7 @@ class App {
   protected useDefaultLogger: boolean
   protected viewEngine: string | undefined
   protected viewsPaths: (string | undefined)[]
-  protected modules: Function[]
+  protected modules: ButterflyModule
   protected eventListenerMap: EventListener[]
   protected jobs: string[] = []
   protected hooks = {
@@ -123,8 +124,8 @@ class App {
   }
 
   public async bootModules (): Promise<void> {
-    for (let moduleImport of this.modules) {
-      const modules = await moduleImport()
+    const load = async (mod: Function, params: object | null = null): Promise<void> => {
+      const modules = await mod()
       const moduleNames = Object.keys(modules)
 
       for (let moduleName of moduleNames) {
@@ -133,8 +134,21 @@ class App {
           module({
             hook: (name, handler): void => {
               this.hook(name, handler)
-            }
+            },
+            params
           })
+        }
+      }
+    }
+
+    for (let moduleImport of this.modules) {
+      if (typeof moduleImport === 'function') {
+        load(moduleImport)
+      } else if (Array.isArray(moduleImport)) {
+        const mod = moduleImport[0]
+        const params = moduleImport[1]
+        if (typeof mod === 'function') {
+          load(mod, params)
         }
       }
     }

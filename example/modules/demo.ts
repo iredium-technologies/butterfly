@@ -1,3 +1,3 @@
-export function demoModule ({ hook }): void {
-  console.log('Hello this is demo module')
+export function demoModule ({ hook, params }): void {
+  console.log('Hello this is demo module', { params })
 }
