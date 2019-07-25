@@ -21,7 +21,8 @@ export abstract class BaseResponse implements ResponseInterface {
   }
 
   public executeRender (res: express.Response): void {
-    res.status(this.statusCode || 200)
+    const statusCode = this.validStatusCode()
+    res.status(statusCode || 200)
     for (let cookieArg of this.cookieArgs) {
       res.cookie(...cookieArg as [string, (string|number|object)])
     }
@@ -29,4 +30,15 @@ export abstract class BaseResponse implements ResponseInterface {
   }
 
   public abstract render(res: express.Response): void;
+
+  private validStatusCode (): number {
+    const code = this.statusCode
+    let validStatusCode = 500
+
+    if (isNaN(code) && code >= 200 && code < 600) {
+      validStatusCode = code
+    }
+
+    return validStatusCode
+  }
 }
