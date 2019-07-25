@@ -35,7 +35,7 @@ export abstract class BaseResponse implements ResponseInterface {
     const code = this.statusCode
     let validStatusCode = 500
 
-    if (isNaN(code) && code >= 200 && code < 600) {
+    if (!isNaN(code) && code >= 200 && code < 600) {
       validStatusCode = code
     }
 
