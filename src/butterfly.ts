@@ -257,7 +257,7 @@ class App {
 
     // Error handler
     app.use(async (error, req, res, next): Promise<void> => {
-      await this.executeHookHandlers('butterfly:onError', error)
+      await this.executeHookHandlers('butterfly:onError', error, req)
       const requestError = (error && error.response) ? error.response.data : null
 
       if (Object.keys(error || {}).length) {
