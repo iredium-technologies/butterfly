@@ -29,8 +29,8 @@ export class ApiController extends BaseController {
    * @returns A Promise, an exception or a value.
    */
   public async show (req, record): Promise<BaseResponse> {
-    if (!record) throw new NotFoundError()
     this.authorize('show', record)
+    if (!record) throw new NotFoundError()
     return new JsonResponse(await this.service.get(record._id))
   }
 
