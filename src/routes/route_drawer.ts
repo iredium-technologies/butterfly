@@ -88,6 +88,10 @@ export class RouteDrawer {
     return this.handleMethod('use', args)
   }
 
+  public options (...args): void {
+    return this.handleMethod('options', args)
+  }
+
   public get (...args): void {
     return this.handleMethod('get', args)
   }
