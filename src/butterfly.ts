@@ -216,23 +216,66 @@ class App {
 
     // Error handler
     app.use(async (error, req, res, next): Promise<void> => {
-      await this.executeHookHandlers('butterfly:onError', error)
-      if (Object.keys(error || {}).length) {
-        const errorResponse = {
+      const isNotProduction = process.env.NODE_ENV !== 'production'
+      let response = {
+        status: 500,
+        body: {}
+      }
+
+      if (error.config) {
+        response.body = {
+          config: {
+            method: error.config.method,
+            timeout: error.config.headers,
+            url: error.config.url,
+            headers: error.config.headers,
+            data: error.config.data,
+          },
+          request: error.request ? {
+            method: error.request.method,
+            timeout: error.request.headers,
+            url: error.request.url,
+            headers: error.request.headers,
+            data: error.request.data,
+          } : null,
+          response: error.response ? {
+            status: error.response.status,
+            headers: error.response.headers,
+            data: error.response.data
+          } : null,
+        }
+      } else if (Object.keys(error || {}).length) {
+        response.body = {
           name: error.name,
           message: error.message,
           code: error.code,
           payload: error.payload
         }
-        if (process.env.NODE_ENV !== 'production') {
-          errorResponse['stack'] = error.stack
-        }
-        res.status(error.code || 500)
-        res.json(errorResponse)
       } else {
-        res.status(500)
-        res.json({error: process.env.NODE_ENV !== 'production' && error.stack ? error.stack : 'something went wrong'})
+        response.body = {
+          error: isNotProduction && error.stack ? error.stack : 'something went wrong'
+        }
       }
+
+      if (error.status >= 100 && error.status < 600) {
+        response.status = error.status
+      }
+
+      if (isNotProduction) {
+        response.body['stack'] = error.stack
+      }
+
+      response.body['url'] = req.originalUrl
+      response.body['request_id'] = res.locals.requestId
+      response.body['user'] = res.locals.user ? {
+        id: res.locals.user.id,
+        username: res.locals.user.username
+      } : null
+
+      await this.executeHookHandlers('butterfly:onError', { response, error, req, res })
+
+      res.status(response.status)
+      res.json(response.body)
     })
   }
 
