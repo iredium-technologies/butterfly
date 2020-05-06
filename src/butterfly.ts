@@ -290,8 +290,8 @@ class App {
   }
 
   protected async drawRoutes (): Promise<void> {
-    await this.executeHookHandlers('butterfly:drawRoutes', Routes, this.app)
     this.routeDrawer.draw(this.app, this.routes)
+    await this.executeHookHandlers('butterfly:drawRoutes', Routes, this.app)
   }
 }
 
