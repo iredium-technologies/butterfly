@@ -228,14 +228,24 @@ class App {
             method: error.config.method,
             timeout: error.config.headers,
             url: error.config.url,
-            headers: error.config.headers,
+            headers: {
+              ...(error.config.headers ? error.config.headers : {}),
+              ...(error.config.headers && error.config.headers.authorization ? {
+                authorization: `${error.config.headers.authorization.substr(0, 10)}***`
+              } : {})
+            },
             data: error.config.data,
           },
           request: error.request ? {
             method: error.request.method,
             timeout: error.request.headers,
             url: error.request.url,
-            headers: error.request.headers,
+            headers: {
+              ...(error.request.headers ? error.request.headers : {}),
+              ...(error.request.headers && error.request.headers.authorization ? {
+                authorization: `${error.config.headers.authorization.substr(0, 10)}***`
+              } : {})
+            },
             data: error.request.data,
           } : null,
           response: error.response ? {
