@@ -226,7 +226,7 @@ class App {
         response.body = {
           config: {
             method: error.config.method,
-            timeout: error.config.headers,
+            timeout: error.config.timeout,
             url: error.config.url,
             headers: {
               ...(error.config.headers ? error.config.headers : {}),
@@ -238,7 +238,7 @@ class App {
           },
           request: error.request ? {
             method: error.request.method,
-            timeout: error.request.headers,
+            timeout: error.request.timeout,
             url: error.request.url,
             headers: {
               ...(error.request.headers ? error.request.headers : {}),
