@@ -4,11 +4,13 @@ import express = require('express')
 export class JsonResponse extends BaseResponse {
   protected responseData = {}
   protected responseMeta = {}
+  protected format = true
 
-  public constructor (response, meta = {}) {
+  public constructor (response, meta = {}, format = true) {
     super()
     this.responseData = response
     this.responseMeta = meta
+    this.format = format
   }
 
   public render (res: express.Response): void {
@@ -17,12 +19,12 @@ export class JsonResponse extends BaseResponse {
   }
 
   protected toJSONResponse (data, meta = {}): object {
-    return {
+    return this.format ? {
       data,
       meta: {
         http_status: this.statusCode,
         ...meta
       }
-    }
+    } : data
   }
 }
