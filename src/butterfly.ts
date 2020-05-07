@@ -227,26 +227,25 @@ class App {
           config: {
             method: error.config.method,
             timeout: error.config.timeout,
+            baseURL: error.config.baseURL,
             url: error.config.url,
             headers: {
               ...(error.config.headers ? error.config.headers : {}),
-              ...(error.config.headers && error.config.headers.authorization ? {
-                authorization: `${error.config.headers.authorization.substr(0, 10)}***`
+              ...(error.config.headers && error.config.headers.Authorization ? {
+                Authorization: `${error.config.headers.Authorization.substr(0, 10)}***`
               } : {})
             },
             data: error.config.data,
           },
           request: error.request ? {
             method: error.request.method,
+            status: error.request.status,
+            statusText: error.request.statusText,
+            withCredentials: error.request.withCredentials,
+            readyState: error.request.readyState,
+            responseURL: error.request.responseURL,
             timeout: error.request.timeout,
-            url: error.request.url,
-            headers: {
-              ...(error.request.headers ? error.request.headers : {}),
-              ...(error.request.headers && error.request.headers.authorization ? {
-                authorization: `${error.config.headers.authorization.substr(0, 10)}***`
-              } : {})
-            },
-            data: error.request.data,
+            responseType: error.request.responseType,
           } : null,
           response: error.response ? {
             status: error.response.status,
@@ -257,13 +256,8 @@ class App {
       } else if (Object.keys(error || {}).length) {
         response.body = {
           name: error.name,
-          message: error.message,
           code: error.code,
           payload: error.payload
-        }
-      } else {
-        response.body = {
-          error: isNotProduction && error.stack ? error.stack : 'something went wrong'
         }
       }
 
@@ -275,10 +269,11 @@ class App {
         response.body['stack'] = error.stack
       }
 
+      response.body['message'] = error.message
       response.body['url'] = req.originalUrl
       response.body['request_id'] = res.locals.requestId
       response.body['user'] = res.locals.user ? {
-        id: res.locals.user.id,
+        id: res.locals.user.id || res.locals.user._id,
         username: res.locals.user.username
       } : null
 
