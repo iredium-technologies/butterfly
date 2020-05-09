@@ -1,7 +1,7 @@
-import Events = require('events')
+import { EventEmitter } from 'events'
 import { EventInterface } from './event_interface'
 
-const event = new Events()
+const event = new EventEmitter()
 
 export abstract class Event implements EventInterface {
   public abstract name: string
