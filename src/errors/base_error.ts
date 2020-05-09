@@ -23,6 +23,10 @@ export class BaseError extends Error {
     this.code = code
     this.payload = payload
     this.stack = (new Error(message)).stack
+
+    if (!this.payload['status']) {
+      this.payload['status'] = (code >= 100 && code < 600) ? code : 500
+    }
   }
 
   public static toJSON (error: BaseError): object {

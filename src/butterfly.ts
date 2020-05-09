@@ -253,16 +253,15 @@ class App {
             data: error.response.data
           } : null,
         }
-      } else if (Object.keys(error || {}).length) {
+      } else if (error.payload) {
         response.body = {
           name: error.name,
           code: error.code,
           payload: error.payload
         }
-      }
-
-      if (error.status >= 100 && error.status < 600) {
-        response.status = error.status
+        if (error.payload.status >= 100 && error.payload.status < 600) {
+          response.status = error.payload.status
+        }
       }
 
       if (isNotProduction) {
