@@ -10,8 +10,8 @@ export class ParseAuthUserMiddleware extends BaseMiddleware {
       const userId = req.get('X-Authenticated-Userid')
       let user = null
       if (userId) user = await users.get(userId)
-      req['user'] = user
-      req['authInfo'] = { scopes }
+      res.locals['user'] = user
+      res.locals['authInfo'] = { scopes }
       next()
     }
   }
