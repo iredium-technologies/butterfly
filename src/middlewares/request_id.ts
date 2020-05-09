@@ -7,6 +7,7 @@ export class RequestId extends BaseMiddleware {
     return async (req, res, next): Promise<void> => {
       res.locals.clientTraceId = req.get('x-client-trace-id')
       res.locals.requestId = req.get('x-request-id') || uuid.v4()
+      req.headers['requestId'] = res.locals.requestId
       next()
     }
   }
