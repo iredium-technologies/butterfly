@@ -90,8 +90,7 @@ export class BaseService {
   }
 
   public async update (record, data): Promise<BaseModelInterface> {
-    record.massAssign(data)
-    await record.save()
+    await record.massAssign(data)
     return this.get(record._id) as Promise<BaseModelInterface> // to re-evaluate virtuals
   }
 

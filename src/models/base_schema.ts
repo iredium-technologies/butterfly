@@ -6,6 +6,7 @@ export class BaseSchema extends mongoose.Schema {
   public methods
   public wasNew: boolean
   protected defaultRouteKeyName
+  protected fillable
   protected populateUser
 
   public constructor (schema) {
@@ -34,6 +35,14 @@ export class BaseSchema extends mongoose.Schema {
     this.wasNew = false
     this.populateUser = { select: 'id username first_name last_name default_address email' }
     this.defaultRouteKeyName = '_id'
+    this.fillable = Object.keys(schema).filter((key): boolean =>
+      key != '_id' &&
+      key != '__v' &&
+      key != 'created_at' &&
+      key != 'updated_at' &&
+      key != 'deleted_at' &&
+      !schema[key].guarded
+    );
     this.registerCommonStatics()
     this.registerCommonMethods()
     this.registerCommonPres()
@@ -61,6 +70,21 @@ export class BaseSchema extends mongoose.Schema {
           }
         })
       })
+    }
+
+    this.methods.massAssign = async function massAssign (data): Promise<mongoose.Document> {
+      try {
+        const allowedData = {}
+        Object.keys(data).forEach((key): void => {
+          if (this.fillable.includes(key)) {
+            allowedData[key] = data[key]
+          }
+        })
+        this.set(allowedData)
+        return this.save()
+      } catch (e) {
+        return Promise.reject(e)
+      }
     }
 
     this.methods.softDelete = async function softDelete (user): Promise<mongoose.Document> {
