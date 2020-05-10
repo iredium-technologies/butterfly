@@ -1,6 +1,6 @@
 import bcrypt = require('bcrypt')
 
-const SALT_WORK_FACTOR = process.env.SALT_WORK_FACTOR || 10
+const SALT_WORK_FACTOR = 10
 
 function hashCallback (resolve, reject): Function {
   return function (err, hash): void {

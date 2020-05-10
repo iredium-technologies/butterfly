@@ -10,5 +10,6 @@ export default {
   modules: [
     () => import('~/example/modules/demo')
   ],
-  eventListenerMap
+  eventListenerMap,
+  env: {}
 }

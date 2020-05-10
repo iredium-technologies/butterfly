@@ -57,7 +57,7 @@ export class RouteDrawer {
     const param = pluralize.singular(path[path.length - 1])
     const actions = this.getActions(param)
 
-    if (process.env.NODE_ENV === 'development') console.log({path: args[0], middlewares, ControllerClass})
+    console.log({path: args[0], middlewares, ControllerClass})
 
     for (let key in actions) {
       const m = ([] as void[]).concat(middlewares)

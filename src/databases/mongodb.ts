@@ -9,11 +9,11 @@ export class MongoDb extends Database {
   public async connect (): Promise<void> {
     if (!connection) {
       const {
-        host = process.env.MONGO_HOST,
-        port = process.env.MONGO_PORT,
-        database = process.env.MONGO_DATABASE,
-        username = process.env.MONGO_USERNAME,
-        password = process.env.MONGO_PASSWORD
+        host,
+        port,
+        database,
+        username,
+        password
       } = this.config
 
       // Set up default mongoose connection
@@ -23,7 +23,7 @@ export class MongoDb extends Database {
 
       mongoose.Promise = global.Promise
       mongoose.set('useCreateIndex', true)
-      mongoose.set('debug', process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test')
+      mongoose.set('debug', this.debug)
 
       // Get the default connection
       connection = mongoose.connection

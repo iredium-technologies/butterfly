@@ -6,6 +6,7 @@ export interface EventListener {
 }
 
 export interface ConfigInterface {
+  env: object;
   routes: Function;
   databases: Function;
   userServiceClass: Class;

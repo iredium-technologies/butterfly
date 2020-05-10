@@ -4,10 +4,11 @@ import kue = require('kue')
 export abstract class Job implements JobInterface {
   public abstract name: string;
   public abstract maxActiveJob: number;
+  public static redisHost: '';
 
   public static enqueue (name, data = {}, priority = 'normal', attempts = 3): Promise<{}> {
     return new Promise((resolve, reject): void => {
-      const queue = kue.createQueue({ redis: `redis://${process.env.REDIS_HOST}` })
+      const queue = kue.createQueue({ redis: Job.redisHost })
       queue.create(name, data)
         .priority(priority)
         .attempts(attempts)

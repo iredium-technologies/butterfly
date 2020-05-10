@@ -52,7 +52,7 @@ class App {
       viewsPaths,
       eventListenerMap } = config
     dotenv.config({
-      path: path.resolve(process.cwd(), process.env.NODE_ENV === 'test' ? '.env.test' : '.env')
+      path: path.resolve(process.cwd(), config.env['NODE_ENV'] === 'test' ? '.env.test' : '.env')
     })
     this.app = express()
     this.routes = routes
@@ -67,18 +67,19 @@ class App {
     this.databaseConfigs = databases() || {
       mongo: {
         enable: false,
-        host: process.env.MONGO_HOST,
-        port: process.env.MONGO_PORT,
-        database: process.env.MONGO_DATABASE,
-        username: process.env.MONGO_USERNAME,
-        password: process.env.MONGO_PASSWORD
+        host: config.env['MONGO_HOST'],
+        port: config.env['MONGO_PORT'],
+        database: config.env['MONGO_DATABASE'],
+        username: config.env['MONGO_USERNAME'],
+        password: config.env['MONGO_PASSWORD']
       }
     }
+    this.app.locals.config = config
   }
 
   public async boot (): Promise<void> {
     if (this.booted) return
-    const { PORT = 8080 } = process.env
+    const { PORT = 8080 } = this.app.locals.config.env
     await this.bootModules()
     await this.registerEventListener()
     await this.setup()
@@ -177,7 +178,7 @@ class App {
 
   protected async connectDatabases (): Promise<void> {
     if (this.databaseConfigs.mongo.enable) {
-      const mongoDb = new MongoDb(this.databaseConfigs.mongo)
+      const mongoDb = new MongoDb(this.databaseConfigs.mongo, this.app.locals.config.env['NODE_ENV'] !== 'production' && this.app.locals.config.env['NODE_ENV'] !== 'test')
       this.databases.push(mongoDb)
     }
 
@@ -216,7 +217,7 @@ class App {
 
     // Error handler
     app.use(async (error, req, res, next): Promise<void> => {
-      const isNotProduction = process.env.NODE_ENV !== 'production'
+      const isNotProduction = req.app.locals.env['NODE_ENV'] !== 'production'
       let response = {
         status: 500,
         body: {}
