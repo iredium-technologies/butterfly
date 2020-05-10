@@ -14,7 +14,7 @@ export class ParseAuthUserMiddleware extends BaseMiddleware {
       const scopes = scopesString ? scopesString.split(' ') : []
       req['locals']['user'] = user
       req['locals']['authInfo'] = { scopes }
-      next
+      next()
     }
   }
 
