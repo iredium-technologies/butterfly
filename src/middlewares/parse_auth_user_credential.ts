@@ -5,7 +5,6 @@ import { ParseAuthenticatedUserJwtError } from '../errors';
 
 const headerScopeName = 'X-Authenticated-Scope'
 const headerAuthenticatedUserName = 'X-Authenticated-User'
-const jwtSecret = 'shhhhh'
 
 export class ParseAuthUserMiddleware extends BaseMiddleware {
   public generate (): express.RequestHandler {
@@ -21,6 +20,7 @@ export class ParseAuthUserMiddleware extends BaseMiddleware {
 
   protected parseAuthenticatedUserJwt (req): object {
     try {
+      const jwtSecret = req.app.locals.config.env['JWT_SECRET']
       const authenticatedUserStr = jwt.verify(req.get(headerAuthenticatedUserName), jwtSecret);
       const authenticatedUser = JSON.parse(authenticatedUserStr)
       return authenticatedUser
