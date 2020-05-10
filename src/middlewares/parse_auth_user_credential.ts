@@ -21,8 +21,7 @@ export class ParseAuthUserMiddleware extends BaseMiddleware {
   protected parseAuthenticatedUserJwt (req): object {
     try {
       const jwtSecret = req.app.locals.config.env['JWT_SECRET']
-      const authenticatedUserStr = jwt.verify(req.get(headerAuthenticatedUserName), jwtSecret);
-      const authenticatedUser = JSON.parse(authenticatedUserStr)
+      const authenticatedUser = jwt.verify(req.get(headerAuthenticatedUserName), jwtSecret);
       return authenticatedUser
     } catch (e) {
       throw new ParseAuthenticatedUserJwtError(e.message, {
