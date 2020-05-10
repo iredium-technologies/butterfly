@@ -217,7 +217,7 @@ class App {
 
     // Error handler
     app.use(async (error, req, res, next): Promise<void> => {
-      const isNotProduction = req.app.locals.env['NODE_ENV'] !== 'production'
+      const isNotProduction = req.app.locals.config.env['NODE_ENV'] !== 'production'
       let response = {
         status: 500,
         body: {}
