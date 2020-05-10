@@ -13,7 +13,7 @@ export const controllerHandler = (ControllerClass, method): Function => async (r
   try {
     const controller: BaseController = new ControllerClass()
     if (!controller[method]) throw Error(`Controller's action "${method}" not found`)
-    controller.init(res.locals['user'])
+    controller.init(req['locals']['user'])
     const params = req.params
     const routeModelBinding = new RouteModelBinding(params, method)
     const paramRecords = await routeModelBinding.getRouteRecords()

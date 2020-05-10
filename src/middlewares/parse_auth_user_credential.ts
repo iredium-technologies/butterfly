@@ -12,8 +12,8 @@ export class ParseAuthUserMiddleware extends BaseMiddleware {
       const user = req.get(headerAuthenticatedUserName) ? this.parseAuthenticatedUserJwt(req) : null
       const scopesString = req.get(headerScopeName)
       const scopes = scopesString ? scopesString.split(' ') : []
-      res.locals['user'] = user
-      res.locals['authInfo'] = { scopes }
+      req['locals']['user'] = user
+      req['locals']['authInfo'] = { scopes }
       next
     }
   }

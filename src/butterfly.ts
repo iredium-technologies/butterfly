@@ -6,7 +6,7 @@ import { ConfigInterface, EventListener } from '~/src/types/config'
 import { NotFoundError } from './errors'
 import Routes, { RouteDrawer } from '~/src/routes/route_drawer'
 import { MongoDb } from './databases/mongodb'
-import { ParseAuthUserMiddleware, RequestId } from '~/src/middlewares'
+import { ParseAuthUserMiddleware, RequestId, ReqLocals } from '~/src/middlewares'
 import express = require('express')
 import logger = require('morgan')
 import bodyParser = require('body-parser')
@@ -194,6 +194,7 @@ class App {
     const app = this.app
 
     const middlewares: BaseMiddleware[] = [
+      new ReqLocals(),
       new RequestId(),
       new ParseAuthUserMiddleware()
     ]
@@ -271,10 +272,10 @@ class App {
 
       response.body['message'] = error.message
       response.body['url'] = req.originalUrl
-      response.body['request_id'] = res.locals.requestId
-      response.body['user'] = res.locals.user ? {
-        id: res.locals.user.id || res.locals.user._id,
-        username: res.locals.user.username
+      response.body['request_id'] = req['locals'].requestId
+      response.body['user'] = req['locals'].user ? {
+        id: req['locals'].user.id || req['locals'].user._id,
+        username: req['locals'].user.username
       } : null
 
       await this.executeHookHandlers('butterfly:onError', { response, error, req, res })
