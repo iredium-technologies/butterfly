@@ -193,13 +193,16 @@ class App {
   protected async registerMiddlewares (): Promise<void> {
     const app = this.app
 
-    const middlewares: BaseMiddleware[] = [
+    const moduleMiddlewares: BaseMiddleware[] = []
+
+    await this.executeHookHandlers('butterfly:registerMiddlewares', moduleMiddlewares)
+
+    const middlewares = [
       new ReqLocals(),
       new RequestId(),
-      new ParseAuthUserMiddleware()
+      new ParseAuthUserMiddleware(),
+      ...moduleMiddlewares,
     ]
-
-    await this.executeHookHandlers('butterfly:registerMiddlewares', middlewares)
 
     for (let middleware of middlewares) {
       middleware.setUserServiceClass(this.userServiceClass)
