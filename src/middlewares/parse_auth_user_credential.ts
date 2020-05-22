@@ -9,11 +9,16 @@ const headerAuthenticatedUserName = 'X-Authenticated-User'
 export class ParseAuthUserMiddleware extends BaseMiddleware {
   public generate (): express.RequestHandler {
     return async (req, res, next): Promise<void> => {
-      const user = req.get(headerAuthenticatedUserName) ? this.parseAuthenticatedUserJwt(req) : null
       const scopesString = req.get(headerScopeName)
       const scopes = scopesString ? scopesString.split(' ') : []
-      req['locals']['user'] = user
+
       req['locals']['authInfo'] = { scopes }
+
+      if (!req['locals']['user']) {
+        const user = req.get(headerAuthenticatedUserName) ? this.parseAuthenticatedUserJwt(req) : null
+        req['locals']['user'] = user
+      }
+
       next()
     }
   }
