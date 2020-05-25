@@ -14,6 +14,7 @@ import dotenv = require('dotenv')
 import path = require('path')
 import { Database } from './databases/database'
 import { Redis } from './databases/redis'
+import cookieParserGenerator = require('cookie-parser')
 
 const DEFAULT_VIEW_ENGINE = 'pug'
 
@@ -168,6 +169,7 @@ class App {
     }
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
+    app.use(cookieParserGenerator())
     if (this.useViewEngine) {
       await this.executeHookHandlers('butterfly:registerViewPaths', this.viewsPaths)
       app.set('view engine', this.viewEngine)
