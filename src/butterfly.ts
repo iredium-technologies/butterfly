@@ -31,6 +31,7 @@ class App {
   protected useDefaultLogger: boolean
   protected viewEngine: string | undefined
   protected viewsPaths: (string | undefined)[]
+  protected errorView: string | undefined
   protected modules: Function[]
   protected eventListenerMap: EventListener[]
   protected hooks = {
@@ -51,6 +52,7 @@ class App {
       useViewEngine = false,
       viewEngine = DEFAULT_VIEW_ENGINE,
       viewsPaths,
+      errorView,
       eventListenerMap } = config
     dotenv.config({
       path: path.resolve(process.cwd(), config.env['NODE_ENV'] === 'test' ? '.env.test' : '.env')
@@ -61,6 +63,7 @@ class App {
     this.userServiceClass = userServiceClass
     this.useViewEngine = useViewEngine
     this.viewsPaths = viewsPaths || [path.join(process.cwd(), '/views')]
+    this.errorView = errorView
     this.viewEngine = viewEngine
     this.modules = config.modules || []
     this.useDefaultLogger = useDefaultLogger
@@ -287,10 +290,15 @@ class App {
         username: req['locals'].user.username
       } : null
 
-      await this.executeHookHandlers('butterfly:onError', { response, error, req, res })
+      await this.executeHookHandlers('butterfly:onError', { response, error, req })
 
       res.status(response.status)
-      res.json(response.body)
+
+      if (this.errorView) {
+        res.render(this.errorView, { error, req })
+      } else {
+        res.json(response.body)
+      }
     })
   }
 

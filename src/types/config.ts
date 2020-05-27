@@ -14,6 +14,7 @@ export interface ConfigInterface {
   useDefaultLogger?: boolean;
   viewEngine?: string;
   viewsPaths?: string[];
+  errorView?: string;
   modules?: Function[];
   eventListenerMap?: EventListener[];
 }
