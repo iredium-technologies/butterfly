@@ -6,7 +6,7 @@ import { ConfigInterface, EventListener } from '~/src/types/config'
 import { NotFoundError } from './errors'
 import Routes, { RouteDrawer } from '~/src/routes/route_drawer'
 import { MongoDb } from './databases/mongodb'
-import { ParseAuthUserMiddleware, RequestId, ReqLocals } from '~/src/middlewares'
+import { ParseAuthUserMiddleware, RequestId } from '~/src/middlewares'
 import express = require('express')
 import logger = require('morgan')
 import bodyParser = require('body-parser')
@@ -164,6 +164,13 @@ class App {
 
   protected async setup (): Promise<void> {
     const app = this.app
+    app.use((req, _res, next): void => {
+      const start = process.hrtime()
+      req['locals'] = {
+        startTime: start
+      }
+      next()
+    })
     app.disable('x-powered-by')
     if (this.useDefaultLogger) {
       app.use(logger('dev', {
@@ -203,7 +210,6 @@ class App {
     await this.executeHookHandlers('butterfly:registerMiddlewares', moduleMiddlewares)
 
     const middlewares = [
-      new ReqLocals(),
       new RequestId(),
       new ParseAuthUserMiddleware(),
       ...moduleMiddlewares,
@@ -230,10 +236,6 @@ class App {
       let response = {
         status: 500,
         body: {}
-      }
-
-      if (!req['locals']) {
-        req['locals'] = {}
       }
 
       if (error.config) {
