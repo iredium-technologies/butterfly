@@ -167,7 +167,8 @@ class App {
     app.use((req, _res, next): void => {
       const start = process.hrtime()
       req['locals'] = {
-        startTime: start
+        startTime: start,
+        timingMark: {}
       }
       next()
     })
@@ -216,7 +217,6 @@ class App {
     ]
 
     for (let middleware of middlewares) {
-      middleware.setUserServiceClass(this.userServiceClass)
       app.use(middleware.handleMiddelware({ databases: this.databases }))
     }
   }
