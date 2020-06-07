@@ -166,9 +166,13 @@ class App {
     const app = this.app
     app.use((req, _res, next): void => {
       const start = process.hrtime()
-      req['locals'] = {
-        startTime: start,
-        timingMark: {}
+      if (!req['locals']) {
+        req['locals'] = {
+          startTime: start,
+          timingMark: {}
+        }
+      } else {
+        console.warn('req.locals is already defined.')
       }
       next()
     })
