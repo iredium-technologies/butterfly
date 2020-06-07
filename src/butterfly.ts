@@ -171,8 +171,6 @@ class App {
           startTime: start,
           timingMark: {}
         }
-      } else {
-        console.warn('req.locals is already defined.')
       }
       next()
     })
