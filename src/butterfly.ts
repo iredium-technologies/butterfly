@@ -238,6 +238,10 @@ class App {
         body: {}
       }
 
+      if (!req['locals']) {
+        req['locals'] = {}
+      }
+
       if (error.config) {
         response.body = {
           config: {
