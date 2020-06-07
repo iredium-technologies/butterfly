@@ -4,7 +4,7 @@ export abstract class BaseMiddleware {
   protected moduleName: string
   protected abstract generate (ctx: object): express.RequestHandler
 
-  public constructor ({ moduleName = 'default' } = {}) {
+  public constructor ({ moduleName = 'butterfly' } = {}) {
     this.moduleName = moduleName
   }
 
