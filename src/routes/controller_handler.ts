@@ -10,6 +10,10 @@ import express = require('express')
  * @param method Controller instance method name
  */
 export const controllerHandler = (ControllerClass, method): Function => async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
+  const timingMark = req['locals']['timingMark']
+
+  timingMark[`butterfly:controller:${ControllerClass.name}:start`] = process.hrtime()
+
   try {
     const controller: BaseController = new ControllerClass()
     if (!controller[method]) throw Error(`Controller's action "${method}" not found`)
@@ -29,5 +33,7 @@ export const controllerHandler = (ControllerClass, method): Function => async (r
     }
   } catch (error) {
     next(error)
+  } finally {
+    timingMark[`butterfly:controller:${ControllerClass.name}:end`] = process.hrtime()
   }
 }
