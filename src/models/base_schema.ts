@@ -1,5 +1,12 @@
 import autopopulate = require('mongoose-autopopulate')
 import mongoose = require('mongoose')
+import { v4 as uuidv4 } from 'uuid'
+
+import mongooseUUID = require('mongoose-uuid2')
+
+const UUID = mongoose.Types['UUID']
+
+mongooseUUID(mongoose)
 
 export class BaseSchema extends mongoose.Schema {
   public statics
@@ -25,6 +32,7 @@ export class BaseSchema extends mongoose.Schema {
       timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
     }
     const combinedSchema = {
+      _id: { type: UUID, default: uuidv4 },
       ...schema,
       ...{
         deleted_at: { type: Date, default: null, protect: true },

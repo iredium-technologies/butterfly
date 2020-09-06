@@ -45,10 +45,12 @@
     "kue": "^0.11.6",
     "mongoose": "^5.4.19",
     "mongoose-autopopulate": "^0.9.1",
+    "mongoose-uuid2": "^2.3.0",
     "morgan": "^1.9.0",
     "node-uuid": "^1.4.8",
     "pluralize": "^7.0.0",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
