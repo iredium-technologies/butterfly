@@ -18,6 +18,7 @@ export class BaseSchema extends mongoose.Schema {
 
   public constructor (schema) {
     const baseOptions = {
+      id: false,
       toObject: {
         virtuals: true
       },
@@ -32,9 +33,9 @@ export class BaseSchema extends mongoose.Schema {
       timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
     }
     const combinedSchema = {
-      _id: { type: UUID, default: uuidv4 },
       ...schema,
       ...{
+        _id: { type: UUID, default: uuidv4 },
         deleted_at: { type: Date, default: null, protect: true },
         deleted_by: { type: String, default: null, hidden: true, protect: true }
       }
