@@ -1,5 +1,7 @@
+import { validate } from 'uuid'
+
 function validateID (id): boolean {
-  return id.match(/^[0-9a-fA-F]{24}$/)
+  return validate(id)
 }
 
 export default validateID
