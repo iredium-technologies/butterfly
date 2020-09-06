@@ -6,6 +6,7 @@ import uuidParse = require('uuid-parse');
 function getter(binary) {
   console.log({location: 'uuid getter'})
   if (binary == null) return undefined;
+  // @ts-ignore
   if (!(binary instanceof mongoose.Types.Buffer.Binary)) return binary;
 
   var len = binary.length();
@@ -35,8 +36,10 @@ function getter(binary) {
 }
 
 function SchemaUUID(path, options) {
+  // @ts-ignore
   mongoose.SchemaTypes.Buffer.call(this, path, options);
 
+  // @ts-ignore
   this.getters.push(getter);
 }
 
@@ -45,10 +48,12 @@ util.inherits(SchemaUUID, mongoose.SchemaTypes.Buffer);
 SchemaUUID.schemaName = 'UUID';
 
 SchemaUUID.prototype.checkRequired = function(value) {
+  // @ts-ignore
   return value instanceof mongoose.Types.Buffer.Binary;
 };
 
 SchemaUUID.prototype.cast = function(value, doc, init) {
+  // @ts-ignore
   if (value instanceof mongoose.Types.Buffer.Binary) return value;
 
   if (typeof value === 'string') {
@@ -78,7 +83,7 @@ SchemaUUID.prototype.castForQuery = function($conditional, val) {
   return this.cast($conditional);
 };
 
-export function registerTypeUUID (mongoose) {
+export function registerType (mongoose) {
   mongoose.Types.UUID = mongoose.SchemaTypes.UUID = SchemaUUID;
 }
 
