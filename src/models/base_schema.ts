@@ -1,12 +1,9 @@
 import autopopulate = require('mongoose-autopopulate')
 import mongoose = require('mongoose')
 import { v4 as uuidv4 } from 'uuid'
+import { UUID } from 'mongoose-uuid2'
 
-import moongooseUUID = require('mongoose-uuid2')
-
-const { UUID } = moongooseUUID
-
-console.log({moongooseUUID})
+mongoose.Types['UUID'] = mongoose.SchemaTypes['UUID'] = UUID;
 
 export class BaseSchema extends mongoose.Schema {
   public statics
