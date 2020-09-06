@@ -84,3 +84,7 @@ export function registerType (mongoose) {
 }
 
 export const UUID = SchemaUUID
+
+class MyBuff4 extends Buffer {
+  kambing () { return 1 }
+}
