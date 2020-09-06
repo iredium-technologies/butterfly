@@ -294,7 +294,7 @@ class App {
       response.body['url'] = req.originalUrl
       response.body['request_id'] = req['locals'].requestId
       response.body['user'] = req['locals'].user ? {
-        id: req['locals'].user.id || req['locals'].user._id,
+        uuid: req['locals'].user.uuid,
         username: req['locals'].user.username
       } : null
 

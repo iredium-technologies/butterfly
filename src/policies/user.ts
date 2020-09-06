@@ -30,6 +30,6 @@ export class UserPolicy extends ApiPolicy {
   }
 
   public allowedUser (): boolean {
-    return this.user && ((String(this.user._id) === String(this.record._id)) || this.user.admin())
+    return this.user && ((String(this.user.uuid) === String(this.record.uuid)) || this.user.admin())
   }
 }

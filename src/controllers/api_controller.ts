@@ -31,7 +31,7 @@ export class ApiController extends BaseController {
   public async show (req, record): Promise<BaseResponse> {
     if (!record) throw new NotFoundError()
     this.authorize('show', record)
-    return new JsonResponse(await this.service.get(record._id))
+    return new JsonResponse(await this.service.get(record.uuid))
   }
 
   /**
@@ -41,7 +41,7 @@ export class ApiController extends BaseController {
    */
   public async create (req): Promise<BaseResponse> {
     this.authorize('create')
-    req.body.user = this.user ? this.user._id : null
+    req.body.user = this.user ? this.user.uuid : null
     const record = await this.service.create(req.body)
     return new JsonResponse(record)
   }

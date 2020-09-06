@@ -23,7 +23,7 @@ export class RouteModelBinding {
         Model = mongoose.models[`_${modelName}`]
       }
       if (Model) {
-        const routeKeyName = Model['getRouteKeyName']() || '_id'
+        const routeKeyName = Model['getRouteKeyName']() || 'uuid'
         const query = {}
         if (!['restore', 'destroy'].includes(this.method)) {
           query['deleted_at'] = null

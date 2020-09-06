@@ -32,7 +32,7 @@ export class BaseSchema extends mongoose.Schema {
     const combinedSchema = {
       ...schema,
       ...{
-        _id: { type: UUID, default: uuidv4 },
+        uuid: { type: UUID, default: uuidv4, protect: true },
         deleted_at: { type: Date, default: null, protect: true },
         deleted_by: { type: String, default: null, hidden: true, protect: true }
       }
@@ -40,10 +40,11 @@ export class BaseSchema extends mongoose.Schema {
     super(combinedSchema, baseOptions)
     this.wasNew = false
     this.populateUser = { select: 'id username first_name last_name default_address email' }
-    this.defaultRouteKeyName = '_id'
+    this.defaultRouteKeyName = 'uuid'
     this.fillable = Object.keys(schema).filter((key): boolean =>
       key != '_id' &&
       key != '__v' &&
+      key != 'uuid' &&
       key != 'created_at' &&
       key != 'updated_at' &&
       key != 'deleted_at' &&
@@ -95,7 +96,7 @@ export class BaseSchema extends mongoose.Schema {
 
     this.methods.softDelete = async function softDelete (user): Promise<mongoose.Document> {
       try {
-        this.set({ deleted_at: Date.now(), deleted_by: user ? user._id : null })
+        this.set({ deleted_at: Date.now(), deleted_by: user ? user.uuid : null })
         if (this['unIndex']) await this.promisify('unIndex')
         return this.save()
       } catch (e) {

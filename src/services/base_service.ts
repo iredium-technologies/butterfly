@@ -67,9 +67,9 @@ export class BaseService {
     return result.exec()
   }
 
-  public async get (index, field = '_id', options = {}): Promise<BaseModelInterface> {
-    if (!field) field = '_id'
-    if (field === '_id' && typeof index === 'string' && !validateID(index)) return Promise.reject(new Error('invalid id'))
+  public async get (index, field = 'uuid', options = {}): Promise<BaseModelInterface> {
+    if (!field) field = 'uuid'
+    if (field === 'uuid' && typeof index === 'string' && !validateID(index)) return Promise.reject(new Error('invalid id'))
     const query = {}
     if (!options['withDeleted']) query['deleted_at'] = null
     query[field] = index
@@ -91,7 +91,7 @@ export class BaseService {
 
   public async update (record, data): Promise<BaseModelInterface> {
     await record.massAssign(data)
-    return this.get(record._id) as Promise<BaseModelInterface> // to re-evaluate virtuals
+    return this.get(record.uuid) as Promise<BaseModelInterface> // to re-evaluate virtuals
   }
 
   public async delete (record): Promise<BaseModelInterface> {

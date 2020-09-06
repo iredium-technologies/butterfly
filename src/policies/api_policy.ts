@@ -27,7 +27,7 @@ export class ApiPolicy extends BasePolicy {
 
   public allowedUser (): boolean {
     try {
-      return this.user && ((String(this.user._id) === String(this.record.user._id ? this.record.user._id : this.record.user)) || this.user.admin())
+      return this.user && ((String(this.user.uuid) === String(this.record.user.uuid ? this.record.user.uuid : this.record.user)) || this.user.admin())
     } catch (e) {
       return false
     }
