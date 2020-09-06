@@ -1,38 +1,26 @@
 import mongoose = require('mongoose');
 import bson = require('bson');
 import util = require('util');
-import uuidParse = require('uuid-parse');
+import uuid = require('uuid');
 
 function getter(binary) {
-  console.log({location: 'uuid getter'})
   if (binary == null) return undefined;
   // @ts-ignore
-  if (!(binary instanceof mongoose.Types.Buffer.Binary)) return binary;
+  if (!(binary instanceof mongoose.Types.Buffer.Binary)) {
+    console.log({ location: 'uuid getter', 'notBinary': true })
+    return binary;
+  }
 
-  var len = binary.length();
-  var b = binary.read(0,len);
-  var buf = new Buffer(len);
-  var hex = '';
-
-  for (var i = 0; i < len; i++) {
+  const len = binary.length();
+  const b = binary.read(0,len);
+  const buf = new Buffer(len);
+  for (let i = 0; i < len; i++) {
     buf[i] = b[i];
   }
 
-  for (var i = 0; i < len; i++) {
-    var n = buf.readUInt8(i);
+  const resultString = uuid.stringify(binary)
 
-    if (n < 16){
-      hex += '0' + n.toString(16);
-    } else {
-      hex += n.toString(16);
-    }
-  }
-
-  const stringResult = hex.substr(0, 8) + '-' + hex.substr(8, 4) + '-' + hex.substr(12, 4) + '-' + hex.substr(16, 4) + '-' + hex.substr(20, 12);
-
-  console.log({location: 'uuid getter', stringResult})
-
-  return stringResult
+  return resultString
 }
 
 function SchemaUUID(path, options) {
@@ -57,7 +45,15 @@ SchemaUUID.prototype.cast = function(value, doc, init) {
   if (value instanceof mongoose.Types.Buffer.Binary) return value;
 
   if (typeof value === 'string') {
-    var uuidBuffer = new mongoose.Types.Buffer(uuidParse.parse(value));
+    const intArr = uuid.parse(value)
+    const len = intArr.length
+    const buf = new Buffer(len);
+
+    for (let i = 0; i < len; i++) {
+      buf[i] = intArr[i];
+    }
+
+    var uuidBuffer = new mongoose.Types.Buffer(buf);
 
     uuidBuffer.subtype(bson.Binary.SUBTYPE_UUID);
 
