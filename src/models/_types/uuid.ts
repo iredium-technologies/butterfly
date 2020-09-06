@@ -18,7 +18,7 @@ function getter(binary) {
     buf[i] = b[i];
   }
 
-  const resultString = uuid.stringify(binary)
+  const resultString = uuid.stringify(buf)
 
   return resultString
 }
