@@ -34,7 +34,7 @@ export class BaseSchema extends mongoose.Schema {
     const combinedSchema = {
       ...schema,
       ...{
-        uuid: { type: UUID, default: uuidv4, protect: true },
+        uuid: { type: UUID, default: uuidv4, protect: true, unique: true, dropDups: true },
         deleted_at: { type: Date, default: null, protect: true },
         deleted_by: { type: String, default: null, hidden: true, protect: true }
       }
