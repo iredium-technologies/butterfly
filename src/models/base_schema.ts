@@ -1,7 +1,7 @@
 import autopopulate = require('mongoose-autopopulate')
 import mongoose = require('mongoose')
-import { v4 as uuidv4 } from 'uuid'
-import { UUID, registerType } from './_types/uuid'
+import { v4 as uuidv4, stringify } from 'uuid'
+import { UUID, registerType, getter as convertToUUIDString } from './_types/uuid'
 
 registerType(mongoose)
 
@@ -17,11 +17,16 @@ export class BaseSchema extends mongoose.Schema {
     const baseOptions = {
       id: false,
       toObject: {
-        virtuals: true
+        virtuals: true,
+        transform: function (doc, ret, options): object {
+          ret.uuid = convertToUUIDString(ret.uuid)
+          return ret
+        }
       },
       toJSON: {
         virtuals: true,
         transform: function (doc, ret, options): object {
+          ret.uuid = convertToUUIDString(ret.uuid)
           delete ret.password
           delete ret.__v
           return ret

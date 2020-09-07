@@ -3,7 +3,7 @@ import bson = require('bson');
 import util = require('util');
 import uuid = require('uuid');
 
-function getter(binary) {
+export function getter(binary) {
   if (binary == null) return undefined;
   // @ts-ignore
   if (!(binary instanceof mongoose.Types.Buffer.Binary)) {
