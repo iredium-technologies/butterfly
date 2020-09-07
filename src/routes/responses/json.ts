@@ -1,22 +1,5 @@
 import { BaseResponse } from '~/src/routes/responses/base_response'
 import express = require('express')
-import uuid = require('uuid')
-
-function stringifyUUID (data): void {
-  if (Array.isArray(data)) {
-    for (let item of data) {
-      stringifyUUID(item)
-    }
-  } else if (typeof data === 'object') {
-    Object.keys(data).forEach((key): void => {
-      if (key === 'uuid') {
-        data[key] = uuid.stringify(data[key])
-      } else {
-        stringifyUUID(data[key])
-      }
-    })
-  }
-}
 
 export class JsonResponse extends BaseResponse {
   protected responseData = {}
@@ -36,7 +19,6 @@ export class JsonResponse extends BaseResponse {
   }
 
   protected toJSONResponse (data, meta = {}): object {
-    stringifyUUID(data)
     return this.format ? {
       data,
       meta: {
