@@ -2,7 +2,6 @@ import { titleCase } from '~/src/helpers/title_case'
 import { NotFoundError } from '~/src/errors/not_found'
 import { BaseModelInterface } from '~/src/models/base_model_interface'
 import mongoose = require('mongoose')
-import { base62 } from '../helpers/encoding'
 
 export class RouteModelBinding {
   protected Model: mongoose.Model<BaseModelInterface>
@@ -29,14 +28,7 @@ export class RouteModelBinding {
         if (!['restore', 'destroy'].includes(this.method)) {
           query['deleted_at'] = null
         }
-        let routeKeyParamValue = this.params[param]
-        if (routeKeyName === 'uuid') {
-          const decodedBase62Buffer = base62.decode(routeKeyParamValue)
-          // @ts-ignore
-          query[routeKeyName] = new mongoose.Types.Buffer.Binary(decodedBase62Buffer)
-        } else {
-          query[routeKeyName] = routeKeyParamValue
-        }
+        query[routeKeyName] = this.params[param]
         const record = await Model.findOne(query).exec() as BaseModelInterface
         if (!record) throw new NotFoundError()
         records.push(record)
