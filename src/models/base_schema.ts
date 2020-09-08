@@ -22,8 +22,9 @@ export class BaseSchema extends mongoose.Schema {
       toJSON: {
         virtuals: true,
         transform: function (doc, ret, options): object {
-          ret.uuid = convertToUUIDString(ret.uuid)
+          ret.id = convertToUUIDString(ret.uuid)
           delete ret._id
+          delete ret.uuid
           delete ret.password
           delete ret.__v
           return ret
