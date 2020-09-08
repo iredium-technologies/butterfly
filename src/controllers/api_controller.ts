@@ -41,7 +41,7 @@ export class ApiController extends BaseController {
    */
   public async create (req): Promise<BaseResponse> {
     this.authorize('create')
-    req.body.user = this.user ? this.user.uuid : null
+    req.body.user_id = this.user ? this.user.uuid : null
     const record = await this.service.create(req.body)
     return new JsonResponse(record)
   }
