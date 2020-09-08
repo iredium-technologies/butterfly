@@ -1,7 +1,7 @@
 import autopopulate = require('mongoose-autopopulate')
 import mongoose = require('mongoose')
-import { v4 as uuidv4, stringify } from 'uuid'
 import { UUID, registerType, getter as convertToUUIDString } from './_types/uuid'
+import { UUID as UUIDHelper } from '~/src/helpers/uuid';
 
 registerType(mongoose)
 
@@ -35,7 +35,7 @@ export class BaseSchema extends mongoose.Schema {
     const combinedSchema = {
       ...schema,
       ...{
-        uuid: { type: UUID, default: uuidv4, protect: true, unique: true, dropDups: true },
+        uuid: { type: UUID, default: UUIDHelper.v4Base62, protect: true, unique: true, dropDups: true },
         deleted_at: { type: Date, default: null, protect: true },
         deleted_by: { type: String, default: null, hidden: true, protect: true }
       }

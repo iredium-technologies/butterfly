@@ -1,7 +1,7 @@
 import mongoose = require('mongoose');
 import bson = require('bson');
 import util = require('util');
-import uuid = require('uuid');
+import { UUID as UUIDHelper } from '~/src/helpers/uuid';
 
 export function getter(binary) {
   if (binary == null) return undefined;
@@ -11,16 +11,7 @@ export function getter(binary) {
     return binary;
   }
 
-  const len = binary.length();
-  const b = binary.read(0,len);
-  const buf = new Buffer(len);
-  for (let i = 0; i < len; i++) {
-    buf[i] = b[i];
-  }
-
-  const resultString = uuid.stringify(buf)
-
-  return resultString
+  return UUIDHelper.bufferToBase62(binary.buffer)
 }
 
 function SchemaUUID(path, options) {
@@ -45,15 +36,7 @@ SchemaUUID.prototype.cast = function(value, doc, init) {
   if (value instanceof mongoose.Types.Buffer.Binary) return value;
 
   if (typeof value === 'string') {
-    const intArr = uuid.parse(value)
-    const len = intArr.length
-    const buf = new Buffer(len);
-
-    for (let i = 0; i < len; i++) {
-      buf[i] = intArr[i];
-    }
-
-    var uuidBuffer = new mongoose.Types.Buffer(buf);
+    const uuidBuffer = UUIDHelper.stringToBuffer(value)
 
     uuidBuffer.subtype(bson.Binary.SUBTYPE_UUID);
 
@@ -84,7 +67,3 @@ export function registerType (mongoose) {
 }
 
 export const UUID = SchemaUUID
-
-class MyBuff4 extends Buffer {
-  kambing () { return 1 }
-}

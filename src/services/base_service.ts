@@ -1,5 +1,4 @@
 import { BaseModelInterface } from '~/src/models/base_model_interface'
-import validateID from '~/src/helpers/validate_id'
 import { Pagination } from '~/src/services/pagination'
 import mongoose = require('mongoose')
 import { NotFoundError } from '../errors';
@@ -69,7 +68,6 @@ export class BaseService {
 
   public async get (index, field = 'uuid', options = {}): Promise<BaseModelInterface> {
     if (!field) field = 'uuid'
-    if (field === 'uuid' && typeof index === 'string' && !validateID(index)) return Promise.reject(new Error('invalid id'))
     const query = {}
     if (!options['withDeleted']) query['deleted_at'] = null
     query[field] = index
