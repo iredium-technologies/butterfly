@@ -286,17 +286,30 @@ class App {
         }
       }
 
-      if (isNotProduction) {
-        response.body['stack'] = error.stack
+      response.body['message'] = error.message;
+      response.body['context'] = {
+        user: (req['locals'].user ? {
+          id: req['locals'].user.id,
+          username: req['locals'].user.username,
+          role: req['locals'].user.role
+        } : null),
+        req: {
+          originalUrl: req.originalUrl,
+          requestId: req['locals'].requestId,
+          headers: {
+            ...req.headers,
+            ...(req.get('authorization') ? {
+              authorization: req.get('authorization').substr(0, 12) + '***'
+            } : {}),
+            ...(req.get('cookie') ? {
+              cookie: req.get('cookie').substr(0, 12) + '***'
+            } : {})
+          }
+        }
       }
-
-      response.body['message'] = error.message
-      response.body['url'] = req.originalUrl
-      response.body['request_id'] = req['locals'].requestId
-      response.body['user'] = req['locals'].user ? {
-        id: req['locals'].user.id,
-        username: req['locals'].user.username
-      } : null
+      if (isNotProduction) {
+        response.body['stack'] = error.stack;
+      }
 
       await this.executeHookHandlers('butterfly:onError', { response, error, req })
 
