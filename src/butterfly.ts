@@ -287,7 +287,8 @@ class App {
       }
 
       response.body['message'] = error.message;
-      response.body['context'] = {
+
+      console.error({
         user: (req['locals'].user ? {
           id: req['locals'].user.id,
           username: req['locals'].user.username,
@@ -305,11 +306,9 @@ class App {
               cookie: req.get('cookie').substr(0, 12) + '***'
             } : {})
           }
-        }
-      }
-      if (isNotProduction) {
-        response.body['stack'] = error.stack;
-      }
+        },
+        stack: error.stack
+      })
 
       await this.executeHookHandlers('butterfly:onError', { response, error, req })
 
