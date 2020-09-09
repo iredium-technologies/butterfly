@@ -288,7 +288,7 @@ class App {
 
       response.body['message'] = error.message;
 
-      console.error({
+      console.error(JSON.stringify({
         context: {
           user: (req['locals'].user ? {
             id: req['locals'].user.id,
@@ -310,7 +310,7 @@ class App {
           },
         },
         error: error.stack
-      })
+      }))
 
       await this.executeHookHandlers('butterfly:onError', { response, error, req })
 
