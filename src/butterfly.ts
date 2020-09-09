@@ -289,25 +289,27 @@ class App {
       response.body['message'] = error.message;
 
       console.error({
-        user: (req['locals'].user ? {
-          id: req['locals'].user.id,
-          username: req['locals'].user.username,
-          role: req['locals'].user.role
-        } : null),
-        req: {
-          originalUrl: req.originalUrl,
-          requestId: req['locals'].requestId,
-          headers: {
-            ...req.headers,
-            ...(req.get('authorization') ? {
-              authorization: req.get('authorization').substr(0, 12) + '***'
-            } : {}),
-            ...(req.get('cookie') ? {
-              cookie: req.get('cookie').substr(0, 12) + '***'
-            } : {})
-          }
+        context: {
+          user: (req['locals'].user ? {
+            id: req['locals'].user.id,
+            username: req['locals'].user.username,
+            role: req['locals'].user.role
+          } : null),
+          req: {
+            originalUrl: req.originalUrl,
+            requestId: req['locals'].requestId,
+            headers: {
+              ...req.headers,
+              ...(req.get('authorization') ? {
+                authorization: req.get('authorization').substr(0, 12) + '***'
+              } : {}),
+              ...(req.get('cookie') ? {
+                cookie: req.get('cookie').substr(0, 12) + '***'
+              } : {})
+            }
+          },
         },
-        stack: error.stack
+        error: error.stack
       })
 
       await this.executeHookHandlers('butterfly:onError', { response, error, req })
