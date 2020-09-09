@@ -18,6 +18,10 @@ export class BaseSchema extends mongoose.Schema {
       id: false,
       toObject: {
         virtuals: true,
+        transform: function (doc, ret, options): object {
+          ret.id = convertToUUIDString(ret.uuid)
+          return ret
+        }
       },
       toJSON: {
         virtuals: true,
