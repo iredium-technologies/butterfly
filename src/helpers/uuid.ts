@@ -25,7 +25,7 @@ export class UUID {
 
   public static stringToBuffer (uuidBase62: string): mongoose.Types.Buffer {
     if (uuidBase62.length > ID_LENGTH) {
-      throw new Error('Exceeded maximum length of 22')
+      throw new Error(`Exceeded maximum length of ${ID_LENGTH}. Received uuidBase62 (length: ${uuidBase62.length}): ${uuidBase62.length > 30 ? `${uuidBase62.substr(0, 30)}***` : uuidBase62}`)
     }
 
     const decodedUUIDBuf = base62.decode(uuidBase62.replace(/^[0]*/,''))
