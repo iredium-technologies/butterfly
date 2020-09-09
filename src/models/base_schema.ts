@@ -56,7 +56,19 @@ export class BaseSchema extends mongoose.Schema {
     this.registerCommonStatics()
     this.registerCommonMethods()
     this.registerCommonPres()
+    this.registerCommonVirtuals()
     this.registerPlugins()
+  }
+
+  protected registerCommonVirtuals (): void {
+    this.virtual('id')
+      .get(function (): string {
+        // @ts-ignore
+        return this.uuid
+      }).set(function (id) {
+        // @ts-ignore
+        this.set({ uuid: id })
+      })
   }
 
   protected registerCommonStatics (): void {
