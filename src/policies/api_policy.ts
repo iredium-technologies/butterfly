@@ -26,8 +26,8 @@ export class ApiPolicy extends BasePolicy {
   }
 
   public isResourceOwner (): boolean {
-    const user = this.user ? this.user.toJSON() : null
-    const record = this.record.toJSON()
+    const user = this.user ? this.user : null
+    const record = this.record
 
     if (!user) {
       return false
