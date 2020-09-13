@@ -22,7 +22,7 @@ export class ApiPolicy extends BasePolicy {
   }
 
   public restore (): boolean {
-    return true
+    return !!this.user
   }
 
   public isResourceOwner (): boolean {
