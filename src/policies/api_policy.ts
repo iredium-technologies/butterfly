@@ -10,26 +10,29 @@ export class ApiPolicy extends BasePolicy {
   }
 
   public create (): boolean {
-    return true
+    return !!this.user
   }
 
   public update (): boolean {
-    return this.allowedUser()
+    return this.isResourceOwner()
   }
 
   public destroy (): boolean {
-    return this.allowedUser()
+    return this.isResourceOwner()
   }
 
   public restore (): boolean {
-    return this.user.admin()
+    return true
   }
 
-  public allowedUser (): boolean {
-    try {
-      return this.user && ((String(this.user.uuid) === String(this.record.user.uuid ? this.record.user.uuid : this.record.user)) || this.user.admin())
-    } catch (e) {
+  public isResourceOwner (): boolean {
+    const user = this.user ? this.user.toJSON() : null
+    const record = this.record.toJSON()
+
+    if (!user) {
       return false
     }
+
+    return user.id === record.user_id
   }
 }
