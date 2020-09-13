@@ -36,6 +36,7 @@ export class BaseSchema extends mongoose.Schema {
       ...schema,
       ...{
         uuid: { type: UUID, default: UUIDHelper.v4Base62, protect: true, unique: true, dropDups: true },
+        user_id: { type: UUID, default: null, protect: true },
         deleted_at: { type: Date, default: null, protect: true },
         deleted_by: { type: String, default: null, hidden: true, protect: true }
       }
