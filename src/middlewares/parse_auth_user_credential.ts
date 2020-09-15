@@ -2,6 +2,7 @@ import { BaseMiddleware } from '~/src/middlewares/base_middleware'
 import express = require('express')
 import jwt = require('jsonwebtoken');
 import { ParseAuthenticatedUserJwtError } from '../errors';
+import { UUID } from '../helpers/uuid';
 
 const headerScopeName = 'X-Authenticated-Scope'
 const headerAuthenticatedUserName = 'X-Authenticated-User'
@@ -16,6 +17,9 @@ export class ParseAuthUserMiddleware extends BaseMiddleware {
 
       if (!req['locals']['user']) {
         const user = req.get(headerAuthenticatedUserName) ? this.parseAuthenticatedUserJwt(req) : null
+        if (user && typeof user['id'] === 'string') {
+          user['id'] = UUID.stringToBuffer(user['id'])
+        }
         req['locals']['user'] = user
       }
 
