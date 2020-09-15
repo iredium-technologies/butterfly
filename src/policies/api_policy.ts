@@ -1,6 +1,8 @@
 import { BasePolicy } from '~/src/policies/base_policy'
 
 export class ApiPolicy extends BasePolicy {
+  protected alwaysAllowedUserRoles: string[] = []
+
   public index (): boolean {
     return true
   }
@@ -29,7 +31,8 @@ export class ApiPolicy extends BasePolicy {
     const user = this.user ? this.user : null
     const record = this.record
     const alwaysAllowedUserRoles = [
-      'root'
+      'root',
+      ...this.alwaysAllowedUserRoles
     ]
 
     if (!user) {
