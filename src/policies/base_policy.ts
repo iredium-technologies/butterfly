@@ -34,4 +34,8 @@ export class BasePolicy {
   public allowedUser (): boolean {
     return false
   }
+
+  protected isAuthenticated (): boolean {
+    return !!this.user
+  }
 }

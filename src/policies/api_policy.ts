@@ -12,7 +12,7 @@ export class ApiPolicy extends BasePolicy {
   }
 
   public create (): boolean {
-    return !!this.user
+    return this.isAuthenticated()
   }
 
   public update (): boolean {
@@ -27,7 +27,7 @@ export class ApiPolicy extends BasePolicy {
     return this.isResourceOwner()
   }
 
-  public isResourceOwner (): boolean {
+  protected isResourceOwner (): boolean {
     const user = this.user ? this.user : null
     const record = this.record
     const alwaysAllowedUserRoles = [
