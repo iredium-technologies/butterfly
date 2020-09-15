@@ -22,6 +22,7 @@ class App {
   public app: express.Express
   public server
   protected booted: boolean = false
+  protected initCompleted: boolean = false
   protected routes: Function
   protected routeDrawer: RouteDrawer
   protected databaseConfigs
@@ -81,9 +82,9 @@ class App {
     this.app.locals.config = config
   }
 
-  public async boot (): Promise<void> {
-    if (this.booted) return
-    const { PORT = 8080 } = this.app.locals.config.env
+  public async init (): Promise<express.Express> {
+    const app = this.app
+    if (this.initCompleted) return app
     await this.bootModules()
     await this.registerEventListener()
     await this.setup()
@@ -91,31 +92,21 @@ class App {
     await this.registerMiddlewares()
     await this.drawRoutes()
     await this.registerErrorMiddleware()
-    this.server = this.app.listen(PORT, async (): Promise<void> => {
+    this.initCompleted = true
+    return app
+  }
+
+  public async boot (): Promise<void> {
+    if (this.booted) return
+    const { PORT = 8080 } = this.app.locals.config.env
+    const app = await this.init()
+    this.server = app.listen(PORT, async (): Promise<void> => {
       await this.executeHookHandlers('butterfly:ready', {
         server: this.server,
         port: PORT,
       })
     })
     this.booted = true
-  }
-
-  public async bootModules (): Promise<void> {
-    for (let moduleImport of this.modules) {
-      const modules = await moduleImport()
-      const moduleNames = Object.keys(modules)
-
-      for (let moduleName of moduleNames) {
-        const module = modules[moduleName]
-        if (module && typeof module === 'function') {
-          module({
-            hook: (name, handler): void => {
-              this.hook(name, handler)
-            }
-          })
-        }
-      }
-    }
   }
 
   public hook (name: string, handler: Function): void {
@@ -133,6 +124,24 @@ class App {
         resolve()
       })
     })
+  }
+
+  protected async bootModules (): Promise<void> {
+    for (let moduleImport of this.modules) {
+      const modules = await moduleImport()
+      const moduleNames = Object.keys(modules)
+
+      for (let moduleName of moduleNames) {
+        const module = modules[moduleName]
+        if (module && typeof module === 'function') {
+          module({
+            hook: (name, handler): void => {
+              this.hook(name, handler)
+            }
+          })
+        }
+      }
+    }
   }
 
   protected async executeHookHandlers (name, ...args): Promise<void> {
