@@ -8,8 +8,11 @@ import { ResourceCreatedResponse } from '../routes/responses/resource_created';
 import { NoContentResponse } from '../routes/responses/no_content';
 
 export class ApiController extends BaseController {
+  private defaultIndexQuery: object = {}
+
   public constructor (ServiceClass: Class, PolicyClass: Class) {
     super(ServiceClass, PolicyClass)
+    this.defaultIndexQuery = this.getDefaultIndexQuery()
   }
 
   /**
@@ -21,7 +24,7 @@ export class ApiController extends BaseController {
     const pagination = await this.service.paginate({
       offset: req.query.offset,
       limit: req.query.limit,
-      query: Object.assign(req.query, { deleted_at: null })
+      query: Object.assign(req.query, { deleted_at: null }, this.defaultIndexQuery)
     })
     const serializer = new BaseSerializer({
       model: pagination.getData(),
@@ -87,5 +90,9 @@ export class ApiController extends BaseController {
     this.authorize('restore', record)
     await this.service.restore(record)
     return new NoContentResponse()
+  }
+
+  protected getDefaultIndexQuery (): object {
+    return {}
   }
 }
