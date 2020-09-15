@@ -36,11 +36,7 @@ SchemaUUID.prototype.cast = function(value, doc, init) {
   if (value instanceof mongoose.Types.Buffer.Binary) return value;
 
   if (typeof value === 'string') {
-    const uuidBuffer = UUIDHelper.stringToBuffer(value)
-
-    uuidBuffer.subtype(bson.Binary.SUBTYPE_UUID);
-
-    return uuidBuffer.toObject();
+    return UUIDHelper.stringToBuffer(value)
   }
 
   throw new Error('Could not cast ' + value + ' to UUID.');
