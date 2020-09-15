@@ -35,12 +35,13 @@ export class ApiPolicy extends BasePolicy {
       ...this.alwaysAllowedUserRoles
     ]
 
-    if (!record.user_id) {
-      return true
-    }
-
+    // keep this above the allow non user owned resource  so that public request still be blocked
     if (!user) {
       return false
+    }
+
+    if (!record.user_id) {
+      return true
     }
 
     if (user.role) {
