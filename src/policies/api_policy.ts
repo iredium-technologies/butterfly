@@ -35,6 +35,10 @@ export class ApiPolicy extends BasePolicy {
       ...this.alwaysAllowedUserRoles
     ]
 
+    if (!record.user_id) {
+      return true
+    }
+
     if (!user) {
       return false
     }
