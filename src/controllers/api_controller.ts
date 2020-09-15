@@ -12,6 +12,10 @@ export class ApiController extends BaseController {
 
   public constructor (ServiceClass: Class, PolicyClass: Class) {
     super(ServiceClass, PolicyClass)
+  }
+
+  public init (user): void {
+    super.init(user)
     this.defaultIndexQuery = this.getDefaultIndexQuery()
   }
 
