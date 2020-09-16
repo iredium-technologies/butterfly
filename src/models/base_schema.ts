@@ -5,6 +5,33 @@ import { UUID as UUIDHelper } from '~/src/helpers/uuid';
 
 registerType(mongoose)
 
+function convertUUIDToString (root): void {
+  let keys: number[] | string[] = Object.keys(root)
+
+  if (root.constructor.name === 'Array') {
+    keys = keys.map((k): number => Number(k))
+    console.log({keys})
+  }
+
+  for (let key of keys) {
+    const type = root[key] ? root[key].constructor.name : null
+    const isArray = type === 'Array'
+    const isObject = type === 'object' || type === 'Object'
+
+    console.log({key, type, value: root[key]})
+
+    if (type === 'Binary') {
+      try {
+        root[key] = convertToUUIDString(root[key])
+      } catch (e) {
+        //
+      }
+    } else if (isArray || isObject) {
+      convertUUIDToString(root[key])
+    }
+  }
+}
+
 export class BaseSchema extends mongoose.Schema {
   public statics
   public methods
@@ -22,6 +49,7 @@ export class BaseSchema extends mongoose.Schema {
       toJSON: {
         virtuals: true,
         transform: function (doc, ret, options): object {
+          convertUUIDToString(ret)
           ret.id = convertToUUIDString(ret.uuid)
           delete ret._id
           delete ret.uuid
