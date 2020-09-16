@@ -90,7 +90,7 @@ export class BaseSchema extends mongoose.Schema {
       .get(function (): string {
         // @ts-ignore
         return this.uuid
-      }).set(function (id) {
+      }).set(function (id): void {
         // @ts-ignore
         this.set({ uuid: id })
       })
@@ -108,8 +108,8 @@ export class BaseSchema extends mongoose.Schema {
     }
 
     this.methods.promisify = function promisify (method): Promise<void> {
-      return new Promise((resolve, reject) => {
-        this[method]((error, res) => {
+      return new Promise((resolve, reject): void => {
+        this[method]((error, res): void => {
           if (error) {
             reject(error)
           } else {
@@ -156,7 +156,7 @@ export class BaseSchema extends mongoose.Schema {
   }
 
   protected registerCommonPres (): void {
-    this.pre('save', function (next) {
+    this.pre('save', function (next): void {
       this['wasNew'] = this.isNew
       next()
     })
