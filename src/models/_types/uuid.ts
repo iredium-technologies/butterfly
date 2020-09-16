@@ -7,7 +7,6 @@ export function getter(binary) {
   if (binary == null) return undefined;
   // @ts-ignore
   if (!(binary instanceof mongoose.Types.Buffer.Binary)) {
-    console.log({ location: 'uuid getter', 'notBinary': true })
     return binary;
   }
 
