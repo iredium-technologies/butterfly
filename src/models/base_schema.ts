@@ -10,15 +10,12 @@ function convertUUIDToString (root): void {
 
   if (root.constructor.name === 'Array') {
     keys = keys.map((k): number => Number(k))
-    console.log({keys})
   }
 
   for (let key of keys) {
     const type = root[key] ? root[key].constructor.name : null
     const isArray = type === 'Array'
     const isObject = type === 'object' || type === 'Object'
-
-    console.log({key, type, value: root[key]})
 
     if (type === 'Binary') {
       try {
