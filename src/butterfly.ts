@@ -118,12 +118,16 @@ class App {
   public close (): Promise<void> {
     return new Promise((resolve): void => {
       this.server.close(async (): Promise<void> => {
-        for (let database of this.databases) {
-          await database.close()
-        }
+        await this.closeDatabases()
         resolve()
       })
     })
+  }
+
+  public async closeDatabases (): Promise<void> {
+    for (let database of this.databases) {
+      await database.close()
+    }
   }
 
   protected async bootModules (): Promise<void> {
