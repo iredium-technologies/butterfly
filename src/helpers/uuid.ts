@@ -15,7 +15,8 @@ function ensureLength (input, targetLength): string {
 
 export class UUID {
   public static v4Base62 (): string {
-    return base62.encode(uuid.parse(uuid.v4()))
+    const buffer = uuid.parse(uuid.v4())
+    return UUID.bufferToBase62(buffer)
   }
 
   // @ts-ignore
