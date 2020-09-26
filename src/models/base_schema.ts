@@ -103,8 +103,10 @@ export class BaseSchema extends mongoose.Schema {
   }
 
   protected registerCommonMethods (): void {
+    const baseSchema = this
+
     this.methods.getRouteKeyName = (): string => {
-      return this.defaultRouteKeyName
+      return baseSchema.defaultRouteKeyName
     }
 
     this.methods.promisify = function promisify (method): Promise<void> {
@@ -122,11 +124,11 @@ export class BaseSchema extends mongoose.Schema {
     this.methods.massAssign = async function massAssign (data): Promise<mongoose.Document> {
       try {
         const allowedData = {}
-        Object.keys(data).forEach((key): void => {
-          if (this.fillable.includes(key)) {
+        for (let key of Object.keys(data)) {
+          if (baseSchema.fillable.includes(key)) {
             allowedData[key] = data[key]
           }
-        })
+        }
         this.set(allowedData)
         return this.save()
       } catch (e) {
