@@ -19,10 +19,12 @@ export class ApiController extends BaseController {
   public async index (req): Promise<BaseResponse> {
     this.authorize('index')
     const defaultIndexQuery = this.getDefaultIndexQuery()
+    const searchKeyword = req.query.search?.keyword
     const pagination = await this.service.paginate({
       offset: req.query.offset,
       limit: req.query.limit,
-      query: Object.assign(req.query, { deleted_at: null }, defaultIndexQuery)
+      query: Object.assign(req.query, { deleted_at: null }, defaultIndexQuery),
+      searchKeyword
     })
     const serializer = new BaseSerializer({
       model: pagination.getData(),

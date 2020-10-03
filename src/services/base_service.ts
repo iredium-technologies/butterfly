@@ -23,7 +23,7 @@ export class BaseService {
     this.keys = Object.keys(Model['schema']['tree'])
   }
 
-  public async paginate ({ options = {}, query = {}, offset = DEFAULT_OFFSET, limit = DEFAULT_LIMIT } = {}): Promise<Pagination> {
+  public async paginate ({ options = {}, query = {}, searchKeyword = '', offset = DEFAULT_OFFSET, limit = DEFAULT_LIMIT } = {}): Promise<Pagination> {
     const pagination = new Pagination({
       Model: this.Model,
       offset: this.parseInt(offset, DEFAULT_OFFSET),
@@ -32,6 +32,7 @@ export class BaseService {
       populates: this.populates,
       query: query,
       filteredQuery: this.filterQuery(query),
+      searchKeyword,
       options
     })
 

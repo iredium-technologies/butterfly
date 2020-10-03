@@ -8,18 +8,20 @@ export class Pagination {
   protected sort
   protected populates
   protected options
+  protected searchKeyword
   protected data: BaseModelInterface | null
   protected meta
   protected totalPage: number
   protected currentPage: number
 
-  public constructor ({ Model, offset = 0, limit = 20, sort = { created_at: -1 }, populates = [], query = {}, filteredQuery = {}, options = {} }) {
+  public constructor ({ Model, searchKeyword, offset = 0, limit = 20, sort = { created_at: -1 }, populates = [], query = {}, filteredQuery = {}, options = {} }) {
     this.Model = Model
     this.offset = offset
     this.limit = limit
     this.sort = sort
     this.populates = populates
     this.options = options
+    this.searchKeyword = searchKeyword
     this.query = this.cleanQuery(query)
     this.filteredQuery = this.cleanQuery(filteredQuery)
     this.data = null
@@ -30,6 +32,12 @@ export class Pagination {
 
   public async run (): Promise<Pagination> {
     const query = this.filteredQuery
+    if (this.searchKeyword) {
+      const $text = {
+        $search: this.searchKeyword
+      }
+      query.$text = $text
+    }
     const result = this.Model.find(query)
       .sort(this.sort)
       .skip(this.offset)
