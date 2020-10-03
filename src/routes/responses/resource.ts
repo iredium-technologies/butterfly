@@ -18,7 +18,7 @@ export class ResourceResponse extends BaseResponse {
         apiVersion: process.env.API_VERSION || '1.0',
         ...this.serializer.meta,
         data: {
-          ...this.serializer.pagination,
+          pagination: this.serializer.pagination,
           items: json
         }
       })

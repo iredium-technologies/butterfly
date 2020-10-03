@@ -11,7 +11,8 @@ export class Pagination {
   protected searchKeyword
   protected data: BaseModelInterface | null
   protected meta
-  protected totalPage: number
+  protected total
+  protected totalPages: number
   protected currentPage: number
 
   public constructor ({ Model, searchKeyword, offset = 0, limit = 20, sort = { created_at: -1 }, populates = [], query = {}, filteredQuery = {}, options = {} }) {
@@ -26,7 +27,8 @@ export class Pagination {
     this.filteredQuery = this.cleanQuery(filteredQuery)
     this.data = null
     this.meta = null
-    this.totalPage = 0
+    this.total = 0
+    this.totalPages = 0
     this.currentPage = 0
   }
 
@@ -51,13 +53,15 @@ export class Pagination {
 
     const total = await this.Model.countDocuments(query).exec()
 
+    this.total = total
+
     this.meta = {
       offset: this.offset,
       limit: this.limit,
       total: total
     }
 
-    this.totalPage = Math.ceil(this.meta.total / this.limit)
+    this.totalPages = Math.ceil(this.meta.total / this.limit)
     this.currentPage = Math.ceil((this.offset / this.limit) + 1)
 
     return this
@@ -68,7 +72,14 @@ export class Pagination {
   }
 
   public getMeta (): object {
-    return this.meta
+    return {
+      currentItemCount: this.data ? this.data['length'] : [],
+      itemsPerPage: this.limit,
+      startIndex: this.offset,
+      totalItems: this.total,
+      pageIndex: this.currentPage,
+      totalPages: this.totalPages
+    }
   }
 
   public links (): object {
@@ -76,8 +87,8 @@ export class Pagination {
     const currentPage = this.currentPage
     const previousPage = this.currentPage - 1
     const nextPage = this.currentPage + 1
-    if (this.totalPage <= 7) {
-      for (let page = 1; page <= this.totalPage; page++) {
+    if (this.totalPages <= 7) {
+      for (let page = 1; page <= this.totalPages; page++) {
         pages.push(this.createPageInfo(page))
       }
     } else {
@@ -85,22 +96,22 @@ export class Pagination {
       const min = 2
       const max = linkCount - 1
       const medianPadding = 1
-      if (currentPage - medianPadding > min && currentPage + medianPadding < this.totalPage - 1) {
+      if (currentPage - medianPadding > min && currentPage + medianPadding < this.totalPages - 1) {
         pages.push(this.createPageInfo(1))
         pages.push(this.createPageInfo(null))
         for (let page = currentPage - medianPadding; page <= currentPage + medianPadding; page++) {
           pages.push(this.createPageInfo(page))
         }
         pages.push(this.createPageInfo(null))
-        pages.push(this.createPageInfo(this.totalPage))
+        pages.push(this.createPageInfo(this.totalPages))
       } else if (currentPage - medianPadding <= min) {
         for (let page = 1; page < max; page++) {
           pages.push(this.createPageInfo(page))
         }
         pages.push(this.createPageInfo(null))
-        pages.push(this.createPageInfo(this.totalPage))
+        pages.push(this.createPageInfo(this.totalPages))
       } else if (currentPage + medianPadding >= max) {
-        for (let page = this.totalPage; page > this.totalPage - (linkCount - 2); page--) {
+        for (let page = this.totalPages; page > this.totalPages - (linkCount - 2); page--) {
           pages.unshift(this.createPageInfo(page))
         }
         pages.unshift(this.createPageInfo(null))
@@ -116,7 +127,7 @@ export class Pagination {
   }
 
   protected createPageInfo (page): object {
-    if (!page || page < 1 || page > this.totalPage) return {
+    if (!page || page < 1 || page > this.totalPages) return {
       page: null
     }
     return {
@@ -130,7 +141,7 @@ export class Pagination {
     const offset = (page - 1) * this.limit
     let queryString = ''
     const query = {
-      ...this.getMeta(),
+      ...this.meta,
       ...this.query,
       offset
     }
