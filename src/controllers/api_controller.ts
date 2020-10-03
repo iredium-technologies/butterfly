@@ -21,8 +21,8 @@ export class ApiController extends BaseController {
     const defaultIndexQuery = this.getDefaultIndexQuery()
     const searchKeyword = req.query.search?.keyword
     const pagination = await this.service.paginate({
-      offset: req.query.offset,
-      limit: req.query.limit,
+      offset: req.query.offset || req.query['start-index'],
+      limit: req.query.limit || req.query['items-per-page'],
       query: Object.assign(req.query, { deleted_at: null }, defaultIndexQuery),
       searchKeyword
     })
