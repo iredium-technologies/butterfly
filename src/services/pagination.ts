@@ -62,7 +62,7 @@ export class Pagination {
     }
 
     this.totalPages = Math.ceil(this.meta.total / this.limit)
-    this.currentPage = Math.ceil((this.offset / this.limit) + 1)
+    this.currentPage = Math.floor((this.offset / this.limit) + 1)
 
     return this
   }
