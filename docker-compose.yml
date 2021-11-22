@@ -15,5 +15,25 @@ services:
       - ./:/app
       - node_modules:/app/node_modules
 
+  test:
+    build: .
+    command: sh -c "yarn && yarn test"
+    depends_on:
+      - mongodb
+    volumes:
+      - ./:/app
+      - node_modules:/app/node_modules
+
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+
 volumes:
   node_modules:
+  mongodb_data_container:
