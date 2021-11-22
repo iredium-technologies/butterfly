@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  build:
+    build: .
+    command: sh -c "yarn && yarn build"
+    volumes:
+      - ./:/app
+      - node_modules:/app/node_modules
+
+volumes:
+  node_modules:
